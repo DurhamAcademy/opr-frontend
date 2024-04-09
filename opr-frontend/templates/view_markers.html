@@ -15,6 +15,8 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <div class="floating-buttons">
+        Click marker to update or delete marker.<br />
+        Click on map to add new marker.<br />
         <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
             <input type="hidden" id="markers-field" name="markers">
             <button type="submit">Save</button>
