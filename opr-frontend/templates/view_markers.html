@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="/static/style.css"/>
     <style>
-        #map { height: 600px; }
+        #map { height: 100vh; height: 100vh;}
     </style>
 </head>
 <body>
@@ -21,6 +21,7 @@
         </form>
         <button type="button">Deploy to Robot</button>
         <button type="button" onclick="location.href='/backup_markers';">Backup Markers</button>
+        <img src="/static/images/compass.png" style="max-width:100%;max-height:100%;"/>
     </div>
 
     <script>
@@ -106,13 +107,19 @@
                     json_duration: markers[index].duration,
                     json_heading: markers[index].heading
                 }).addTo(map);
-                marker.bindPopup(markers[index].name) // Set initial label/popup with marker name
-
-                marker.bindTooltip(index,{permanent:true, direction:'bottom'}).openTooltip();
+                marker.bindPopup(markers[index].name); // Set initial label/popup with marker name
+                var tooltipLabel = index.concat(":" + markers[index].name)
+                marker.bindTooltip(tooltipLabel,
+                    {
+                        permanent:true,
+                        direction:'bottom',
+                        offset: [-15, 30]
+                    }).openTooltip();
 
                 marker.on('dragend', function(event) {
-                    var markerId = event.target._leaflet_id; // Get the marker ID
+                    var markerId = event.target.options.json_id; // Get the marker ID
                     markers[markerId] = event.target._latlng; // Update markers variable
+                    console.log(markers);
                 });
 
                 // Assign a unique ID to the marker

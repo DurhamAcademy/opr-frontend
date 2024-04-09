@@ -1,12 +1,16 @@
+
+
 .floating-buttons {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 5px;
+    right: 5px;
     z-index: 1000;
     background-color: #008040;
     opacity: 0.5;
     padding: 10px;
     border-radius: 5px;
+    width: 200px;
+    justify-content: center;
 }
 
 .floating-buttons:hover {
