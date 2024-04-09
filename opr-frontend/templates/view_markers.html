@@ -15,7 +15,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <div class="floating-buttons">
-        <form id="markers-form" action="{{ url_for('save_markers') }}" method="post">
+        <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
             <input type="hidden" id="markers-field" name="markers">
             <button type="submit">Save</button>
         </form>
@@ -25,12 +25,11 @@
 
     <script>
         function deleteMarker(markerId) {
-            console.log(markerId);
             // remove marker data from the markers object
             delete markers[markerId];
             // trigger a form save
             // Get the form element
-            var form = document.getElementById('markers-form');
+            var form = document.getElementById('save-markers-form');
             // Set the form submission method to GET
             form.method = 'POST';
             document.getElementById('markers-field').value = JSON.stringify(markers);
@@ -38,20 +37,33 @@
             form.submit();
         }
 
-        function editMarker(markerId) {
-
-        }
-
         // pop up menu for delete and rename
-        function showMenu(marker, event) {
+        function showMenu(event) {
             var menu = document.createElement('div');
-            var markerName = marker.name;
             var markerId = event.target._leaflet_id
+            console.log(event.sourceTarget.options.json_id);
+            menu.className = ""
             menu.innerHTML = `
-                <p>Marker Name: ${markerName}</p>
-                <button onclick="editMarker(${markerId})" style="width: 120px;">Edit Marker</button><br/>
-                <br />
-                <button onclick="deleteMarker(${markerId})" style="width: 120px;">Delete</button>
+
+                <p>
+                    Marker Name: ${event.sourceTarget.options.json_name}<br />
+                    Marker Number: ${event.sourceTarget.options.json_id}<br />
+                    <form id="edit-marker-form-${event.sourceTarget.options.json_id}" method="post" action="/edit_marker">
+                        <input type="hidden" name="markerId" value="${event.sourceTarget.options.json_id}" />
+                        <label for="markerName">Marker Name</label><br/>
+                        <input type="text" name="markerName" value="${event.sourceTarget.options.json_name}" /><br />
+                        <br />
+                        <label for="markerHeading">Direction Heading (0-360)</label><br/>
+                        <input type="number" name="markerHeading" value="${event.sourceTarget.options.json_heading}" /><br />
+                        <br />
+                        <label for="markerDuration">Duration (seconds)</label><br/>
+                        <input type="number" name="markerDuration" value="${event.sourceTarget.options.json_duration}" /><br />
+                        <br />
+                        <button type="submit" class="marker-buttons">Update</button>
+                    </form>
+                    <br />
+                    <button onclick="deleteMarker(${event.sourceTarget.options.json_id})" class="marker-buttons" >Delete</button>
+                </p>
             `;
             var popup = L.popup().setLatLng(event.latlng).setContent(menu).openOn(map);
         }
@@ -87,7 +99,13 @@
         // add markers to the map from json
         for (var index in markers) {
             if (markers.hasOwnProperty(index)) {
-                var marker = L.marker(markers[index], { draggable: true }).addTo(map);
+                var marker = L.marker([markers[index].lat, markers[index].lng], {
+                    draggable: true,
+                    json_id: index,
+                    json_name: markers[index].name,
+                    json_duration: markers[index].duration,
+                    json_heading: markers[index].heading
+                }).addTo(map);
                 marker.bindPopup(markers[index].name) // Set initial label/popup with marker name
 
                 marker.bindTooltip(index,{permanent:true, direction:'bottom'}).openTooltip();
@@ -98,9 +116,8 @@
                 });
 
                 // Assign a unique ID to the marker
-                marker._leaflet_id = index;
                 marker.on('click', function(event) {
-                    showMenu(marker, event); // Show the menu for the clicked marker
+                    showMenu(event); // Show the menu for the clicked marker
                 });
 
             }
@@ -132,11 +149,12 @@
         map.on('click', onMapClick);
 
         // handle saving markers.
-        document.getElementById('markers-form').addEventListener('submit', function(event) {
+        document.getElementById('save-markers-form').addEventListener('submit', function(event) {
             event.preventDefault();
             document.getElementById('markers-field').value = JSON.stringify(markers);
             this.submit();
         });
+
     </script>
 
 </body>

@@ -8,9 +8,21 @@ def home():
     return redirect(url_for('view_markers'))
 
 
-@app.route('/edit_marker/<int:marker_id>')
-def edit_marker(marker_id):
-    return render_template('edit_marker.html', marker_id=marker_id)
+@app.route('/edit_marker', methods=['POST'])
+def edit_marker():
+    # open markers file
+    with open('markers.json', 'r') as f:
+        markers = json.load(f)
+    # update with new data
+    for i in markers:
+        if i == request.form['markerId']:
+            markers[i]['name'] = request.form['markerName']
+            markers[i]['heading'] = request.form['markerHeading']
+            markers[i]['duration'] = request.form['markerDuration']
+    # save back to file
+    with open('markers.json', 'w') as f:
+        json.dump(markers, f)
+    return redirect(url_for('view_markers'))
 
 
 @app.route('/save_markers', methods=['POST'])

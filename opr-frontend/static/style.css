@@ -18,3 +18,12 @@
     margin-bottom: 10px;
     width: 180px;
 }
+
+.marker-buttons {
+    width: 180px;
+}
+
+.marker-buttons button {
+    margin-bottom: 10px;
+    width: 180px;
+}
