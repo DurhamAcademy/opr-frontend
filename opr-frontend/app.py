@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
 import json
 
 app = Flask(__name__)
@@ -26,6 +26,13 @@ def save_markers():
     with open('markers.json', 'w') as f:
         json.dump(new_markers, f)
     return redirect(url_for('view_markers'))
+
+
+@app.route('/backup_markers')
+def backup_markers():
+    filename = 'markers.json'
+    filepath = '/markers.json'
+    return send_file(filename, as_attachment=True)
 
 
 @app.route('/view_markers')

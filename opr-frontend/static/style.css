@@ -1,0 +1,20 @@
+.floating-buttons {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: skyblue;
+    opacity: 0.5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.floating-buttons:hover {
+  opacity: 1.0;
+}
+
+.floating-buttons button {
+    display: block;
+    margin-bottom: 10px;
+    width: 180px;
+}
