@@ -47,6 +47,14 @@ def backup_markers():
     return send_file(filename, as_attachment=True)
 
 
+@app.route('/deploy_markers')
+def deploy_markers():
+    print("test")
+    # Need a function to copy the markers.json file to the robot where
+    # running program is able to start using them.
+    return redirect(url_for('view_markers'))
+
+
 @app.route('/view_markers')
 def view_markers():
     with open('markers.json', 'r') as f:
