@@ -1,19 +1,26 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 import json
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('view_markers.html')
+
+
+@app.route('/edit_marker/<int:marker_id>')
+def edit_marker(marker_id):
+    # Fetch marker data based on the marker_id
+    # You can pass the marker data to the template
+    return render_template('edit_marker.html', marker_id=marker_id)
+
 
 @app.route('/save_markers', methods=['POST'])
 def save_markers():
     markers = json.loads(request.form['markers'])
-    markers_with_index = {i: marker for i, marker in enumerate(markers)}
     with open('markers.json', 'w') as f:
-        json.dump(markers_with_index, f)
-    return jsonify({'success': True})
+        json.dump(markers, f)
+    return redirect(url_for('view_markers'))
 
 
 @app.route('/view_markers')
