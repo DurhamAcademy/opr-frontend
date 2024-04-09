@@ -18,21 +18,31 @@
     </form>
     <script>
         function deleteMarker(markerId) {
-            // Remove marker from the map
-            map.removeLayer(markers[markerId].marker);
-
+            console.log(markerId);
             // remove marker data from the markers object
             delete markers[markerId];
+            // trigger a form save
+            // Get the form element
+            var form = document.getElementById('markers-form');
+            // Set the form submission method to GET
+            form.method = 'POST';
+            document.getElementById('markers-field').value = JSON.stringify(markers);
+            // Trigger the form submission
+            form.submit();
+        }
 
-            // update the markers.json file here.
+        function nameMarker(markerId) {
+
         }
 
         // pop up menu for delete and rename
         function showMenu(markerId, event) {
+            console.log(event);
             var menu = document.createElement('div');
             menu.innerHTML = `
-                <button onclick="renameMarker(${markerId})">Rename</button>
-                <button onclick="deleteMarker(${markerId})">Delete</button>
+                <button onclick="nameMarker(${markerId})" style="width: 120px;">Name Marker</button><br/>
+                <br />
+                <button onclick="deleteMarker(${markerId})" style="width: 120px;">Delete</button>
             `;
             var popup = L.popup().setLatLng(event.latlng).setContent(menu).openOn(map);
         }
@@ -45,6 +55,7 @@
             subdomains:['mt0','mt1','mt2','mt3']
         }).addTo(map);
 
+        // get markers var from json
         var markers = {{ markers | tojson }};
 
         // Create an array to store latlng coordinates of markers for polyline
@@ -73,18 +84,15 @@
                 marker.bindTooltip(index,{permanent:true, direction:'bottom'}).openTooltip();
 
                 marker.on('dragend', function(event) {
-                    console.log(event);
                     var markerId = event.target._leaflet_id; // Get the marker ID
-                    var newMarkerPosition = event.target.getLatLng(); // Get the new position
                     markers[markerId] = event.target._latlng; // Update markers variable
-                    console.log(event.target._latlng);
-                    console.log(markers);
                 });
 
                 // Assign a unique ID to the marker
                 marker._leaflet_id = index;
-                console.log(index);
                 marker.on('click', function(event) {
+                    console.log("event:");
+                    console.log(event);
                     var markerId = event.target._leaflet_id; // Get the marker ID
                     showMenu(markerId, event); // Show the menu for the clicked marker
                 });
