@@ -14,3 +14,4 @@
 
 Markers are saved to markers.json
 
+![screenshot.png](images/screenshot.png)
