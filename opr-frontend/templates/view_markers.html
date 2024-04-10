@@ -14,11 +14,13 @@
 <body>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div class="floating-compass">
+        <img src="/static/images/compass_rose.png" style="max-width:100%;max-height:100%;"/>
+    </div>
 
     <div class="floating-buttons">
         Click marker to update or delete marker.<br />
         Click on map to add new marker.
-        <img src="/static/images/compass.png" style="max-width:100%;max-height:100%;"/>
         <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
             <input type="hidden" id="markers-field" name="markers">
             <button type="submit">Save</button>
@@ -60,7 +62,7 @@
                         <input type="text" name="markerName" value="${event.sourceTarget.options.json_name}" /><br />
                         <br />
                         <label for="markerHeading">Direction Heading (0-360)</label><br/>
-                        <input type="number" name="markerHeading" value="${event.sourceTarget.options.json_heading}" /><br />
+                        <input type="number" name="markerHeading" min="0" max="360" value="${event.sourceTarget.options.json_heading}" /><br />
                         <br />
                         <label for="markerDuration">Duration (seconds)</label><br/>
                         <input type="number" name="markerDuration" value="${event.sourceTarget.options.json_duration}" /><br />

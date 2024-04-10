@@ -4,10 +4,20 @@ body {
     font-family: "Source Sans 3", sans-serif;
 }
 
+.floating-compass {
+    position: fixed;
+    top: 5px;
+    right: 5px;
+    z-index: 1000;
+    padding: 10px;
+    width: 200px;
+    justify-content: center;
+}
+
 .floating-buttons {
     position: fixed;
-    bottom: 5px;
-    right: 5px;
+    bottom: 15px;
+    right: 15px;
     z-index: 1000;
     background-color: grey;
     padding: 10px;
@@ -33,4 +43,44 @@ body {
 .marker-buttons button {
     margin-bottom: 10px;
     width: 180px;
+}
+
+.slider-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 50px auto;
+}
+
+.slider {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  appearance: none;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  outline: none;
+  z-index: 1;
+}
+
+output {
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
+.arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  background-image: url('arrow.png'); /* Replace 'arrow.png' with your image path */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(0deg);
+  z-index: 2;
 }
