@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
+from flask_simplelogin import SimpleLogin, login_required
 import json
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'something-secret'
+app.config['SIMPLELOGIN_USERNAME'] = 'admin'
+app.config['SIMPLELOGIN_PASSWORD'] = 'secret'
+SimpleLogin(app)
 
 @app.route('/')
 def home():
@@ -9,6 +14,7 @@ def home():
 
 
 @app.route('/edit_marker', methods=['POST'])
+@login_required
 def edit_marker():
     # open markers file
     with open('markers.json', 'r') as f:
@@ -26,6 +32,7 @@ def edit_marker():
 
 
 @app.route('/save_markers', methods=['POST'])
+@login_required
 def save_markers():
     markers = json.loads(request.form['markers'])
     # re-index markers
@@ -41,6 +48,7 @@ def save_markers():
 
 
 @app.route('/backup_markers')
+@login_required
 def backup_markers():
     filename = 'markers.json'
     filepath = '/markers.json'
@@ -48,6 +56,7 @@ def backup_markers():
 
 
 @app.route('/deploy_markers')
+@login_required
 def deploy_markers():
     print("test")
     # Need a function to copy the markers.json file to the robot where
@@ -56,6 +65,7 @@ def deploy_markers():
 
 
 @app.route('/view_markers')
+@login_required
 def view_markers():
     with open('markers.json', 'r') as f:
         markers = json.load(f)
