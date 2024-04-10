@@ -6,6 +6,7 @@
     <title>View Markers</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet" href="/static/style.css"/>
+
     <style>
         #map { height: 100vh; height: 100vh;}
     </style>
@@ -15,10 +16,8 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <div class="floating-buttons">
-        <ul>
-            <li>Click marker to update or delete marker.</li>
-            <li>Click on map to add new marker.</li>
-        </ul>
+        Click marker to update or delete marker.<br />
+        Click on map to add new marker.
         <img src="/static/images/compass.png" style="max-width:100%;max-height:100%;"/>
         <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
             <input type="hidden" id="markers-field" name="markers">
@@ -43,17 +42,18 @@
             form.submit();
         }
 
-        // pop up menu for delete and rename
+        // pop up menu for delete and rename on markers
         function showMenu(event) {
+            console.log(event);
             var menu = document.createElement('div');
-            var markerId = event.target._leaflet_id
-            console.log(event.sourceTarget.options.json_id);
             menu.className = ""
             menu.innerHTML = `
-
                 <p>
                     Marker Name: ${event.sourceTarget.options.json_name}<br />
                     Marker Number: ${event.sourceTarget.options.json_id}<br />
+                    Coordinates: <br />
+                    ${event.latlng.lat}<br />
+                    ${event.latlng.lng}<br />
                     <form id="edit-marker-form-${event.sourceTarget.options.json_id}" method="post" action="/edit_marker">
                         <input type="hidden" name="markerId" value="${event.sourceTarget.options.json_id}" />
                         <label for="markerName">Marker Name</label><br/>
@@ -77,10 +77,14 @@
         // create map
         var map = L.map('map').setView([36.007659549566725, -78.8437123056821], 20);
 
+        // google maps layer
         L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }).addTo(map);
+
+        // remove attribution
+        map.attributionControl.setPrefix(false);
 
         // get markers var from json
         var markers = {{ markers | tojson }};
@@ -88,7 +92,7 @@
         // Create an array to store latlng coordinates of markers for polyline
         var coordinates = [];
 
-        // Add marker coordinates to the array
+        // Add marker coordinates to an array for polyline
         for (var index in markers) {
             if (markers.hasOwnProperty(index)) {
                 point = [markers[index]["lat"], markers[index]["lng"]];
@@ -97,7 +101,7 @@
         }
 
         // Create a polyline using the marker coordinates
-        var polyline = L.polyline(coordinates, {color: 'green'}).addTo(map);
+        var polyline = L.polyline(coordinates, {color: 'red'}).addTo(map);
 
         // Fit the map to the bounds of the polyline
         map.fitBounds(polyline.getBounds());
@@ -112,7 +116,9 @@
                     json_duration: markers[index].duration,
                     json_heading: markers[index].heading
                 }).addTo(map);
-                marker.bindPopup(markers[index].name); // Set initial label/popup with marker name
+
+                // Set initial label/popup with marker name
+                marker.bindPopup(markers[index].name);
                 var tooltipLabel = index.concat(":" + markers[index].name)
                 marker.bindTooltip(tooltipLabel,
                     {
@@ -123,8 +129,13 @@
 
                 marker.on('dragend', function(event) {
                     var markerId = event.target.options.json_id; // Get the marker ID
-                    markers[markerId] = event.target._latlng; // Update markers variable
-                    console.log(markers);
+                    // Update markers variable
+                    // For some reason all other fields need to be updated again.
+                    markers[markerId] = event.target._latlng;
+                    markers[markerId].name = event.target.options.json_name;
+                    markers[markerId].heading = event.target.options.json_heading;
+                    markers[markerId].duration = event.target.options.json_duration;
+                    console.log(event);
                 });
 
                 // Assign a unique ID to the marker
