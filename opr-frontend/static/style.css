@@ -1,20 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 
+body {
+    font-family: "Source Sans 3", sans-serif;
+}
 
 .floating-buttons {
     position: fixed;
     bottom: 5px;
     right: 5px;
     z-index: 1000;
-    background-color: #008040;
-    opacity: 0.5;
+    background-color: grey;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     width: 200px;
     justify-content: center;
+    color: white;
 }
 
 .floating-buttons:hover {
-  opacity: 1.0;
 }
 
 .floating-buttons button {

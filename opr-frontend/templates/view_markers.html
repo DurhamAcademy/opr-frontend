@@ -15,15 +15,18 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <div class="floating-buttons">
-        Click marker to update or delete marker.<br />
-        Click on map to add new marker.<br />
+        <ul>
+            <li>Click marker to update or delete marker.</li>
+            <li>Click on map to add new marker.</li>
+        </ul>
+        <img src="/static/images/compass.png" style="max-width:100%;max-height:100%;"/>
         <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
             <input type="hidden" id="markers-field" name="markers">
             <button type="submit">Save</button>
         </form>
         <button type="button">Deploy to Robot</button>
         <button type="button" onclick="location.href='/backup_markers';">Backup Markers</button>
-        <img src="/static/images/compass.png" style="max-width:100%;max-height:100%;"/>
+
     </div>
 
     <script>
