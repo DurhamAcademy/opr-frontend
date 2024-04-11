@@ -44,7 +44,7 @@ def save_markers():
         new_index += 1
     with open('markers.json', 'w') as f:
         json.dump(new_markers, f)
-    return redirect(url_for('view_markers'))
+    return redirect(url_for('view_markers') + "?saved=true")
 
 
 @app.route('/backup_markers')
