@@ -148,6 +148,22 @@
             }
         }
 
+        // add the robots current location to the map.
+        var robotIcon = L.icon({
+            iconUrl: '/static/images/robot.png',
+            //shadowUrl: 'leaf-shadow.png',
+
+            iconSize:     [30, 30],
+            shadowSize:   [50, 64],
+            iconAnchor:   [22, 94],
+            shadowAnchor: [4, 62],
+            popupAnchor:  [-3, -76]
+        });
+        console.log("{{ gps_location[0] }}", "{{ gps_location[1]}}");
+        L.marker([ "{{ gps_location[0] }}", "{{ gps_location[1]}}" ], {
+            icon: robotIcon
+        }).addTo(map);
+
         // add new marker on click of map
         function onMapClick(e) {
 

@@ -67,9 +67,16 @@ def deploy_markers():
 @app.route('/view_markers')
 @login_required
 def view_markers():
+    # read markers file
     with open('markers.json', 'r') as f:
         markers = json.load(f)
-    return render_template('view_markers.html', markers=markers)
+    f.close()
+    # read current location from cgbot code
+    with open('../../cgbot-opr/gps_location.txt', 'r') as l:
+        d = l.read()
+    l.close()
+    gps_location = eval(d)
+    return render_template('view_markers.html', markers=markers, gps_location=gps_location)
 
 
 if __name__ == '__main__':
