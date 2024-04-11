@@ -159,7 +159,7 @@
             shadowAnchor: [4, 62],
             popupAnchor:  [-3, -76]
         });
-        console.log("{{ gps_location[0] }}", "{{ gps_location[1]}}");
+
         L.marker([ "{{ gps_location[0] }}", "{{ gps_location[1]}}" ], {
             icon: robotIcon
         }).addTo(map);

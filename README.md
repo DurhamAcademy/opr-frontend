@@ -12,6 +12,6 @@
 
 `python app.py`
 
-Markers are saved to markers.json
+Markers are saved to markers.json 
 
 ![screenshot.png](images/screenshot.png)
