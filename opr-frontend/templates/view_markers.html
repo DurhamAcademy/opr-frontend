@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/static/css/bootstrap.min.css" >
 
     <style>
-        #map { height: 100vh; height: 100vh;}
+        #map { height: 100vh; }
     </style>
 </head>
 <body>
@@ -201,10 +201,43 @@
 
     </script>
 
+    <div class="alert fixed-top alert-success alert-dismissible fade hidden" role="alert" id="deploy-success">
+        <strong>Deployed</strong> Coordinates deployed to robot
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="alert fixed-top alert-success alert-dismissible fade hidden" role="alert" id="save-success">
+        <strong>Saved</strong> Coordinates saved. Don't forget to deploy when ready.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
 
     <!--- Jquery, Bootstrap, Popper --->
     <script src="/static/js/jquery-3.2.1.slim.min.js"></script>
     <script src="/static/js/popper.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+
+    <script>
+        // handle messages
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        const deployed = urlParams.get('deployed')
+        if (deployed == "true") {
+            console.log("ok");
+            $('#deploy-success').addClass('show');
+            document.getElementById('deploy-success').style.visibility = "visible";
+        }
+
+        const saved = urlParams.get('saved')
+        if (saved == "true") {
+            console.log("ok");
+            $('#save-success').addClass('show');
+            document.getElementById('save-success').style.visibility = "visible";
+        }
+    </script>
 </body>
 </html>
