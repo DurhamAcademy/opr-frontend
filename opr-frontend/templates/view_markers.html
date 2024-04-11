@@ -208,6 +208,13 @@
         </button>
     </div>
 
+    <div class="alert fixed-top alert-danger alert-dismissible fade hidden" role="alert" id="deploy-failed">
+        <strong>Deploy Failed</strong> Please check all markers have names, headings, and duration.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
     <div class="alert fixed-top alert-success alert-dismissible fade hidden" role="alert" id="save-success">
         <strong>Saved</strong> Coordinates saved. Don't forget to deploy when ready.
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -230,6 +237,10 @@
             console.log("ok");
             $('#deploy-success').addClass('show');
             document.getElementById('deploy-success').style.visibility = "visible";
+        } else if (deployed == "false") {
+            console.log("not ok");
+            $('#deploy-failed').addClass('show');
+            document.getElementById('deploy-failed').style.visibility = "visible";
         }
 
         const saved = urlParams.get('saved')
