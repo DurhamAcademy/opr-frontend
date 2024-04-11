@@ -58,11 +58,40 @@ def backup_markers():
 @app.route('/deploy_markers')
 @login_required
 def deploy_markers():
-    print("test")
-    # Need a function to copy the markers.json file to the robot where
-    # running program is able to start using them.
-    return redirect(url_for('view_markers'))
+    with open('markers.json', 'r') as f:
+        markers = json.load(f)
+    f.close()
+    deploy = {}
+    coordinates = []
+    for i in markers:
+        # set some defaults
+        label = str(markers[i]['name'])
+        duration = int(markers[i]['duration'])
+        heading = int(markers[i]['heading'])
+        coords = str(markers[i]['lat']) + "," + str(markers[i]['lng'])
+        # put in a dict
+        tmp = {'label': label,
+               'coordinates': coords,
+               'final_heading': heading,
+               'duration': duration
+               }
+        #add dict to list
+        coordinates.append(tmp)
 
+    # assign to coordinates dict
+    deploy['coordinates'] = coordinates
+
+    # save to file
+    with open('deploy.json', 'w') as f:
+        f.write(json.dumps(deploy))
+    f.close()
+
+    # save to robot
+    with open('../../cgbot-opr/route.json', 'w') as f:
+        f.write(json.dumps(deploy))
+    f.close()
+
+    return redirect(url_for('view_markers') + "?deployed=true")
 
 @app.route('/view_markers')
 @login_required
