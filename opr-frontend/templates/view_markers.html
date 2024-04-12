@@ -22,7 +22,7 @@
     </div>
 
     <div class="floating-buttons">
-        Click marker to update or delete marker.<br />
+        Click marker to update or delete.<br />
         Click on map to add new marker.
         <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
             <input type="hidden" id="markers-field" name="markers">
@@ -30,7 +30,7 @@
         </form>
         <button type="button" onclick="location.href='/deploy_markers';">Deploy to Robot</button>
         <button type="button" onclick="location.href='/backup_markers';">Backup Markers</button>
-        <button type="button" onclick="window.location.reload();">Revert to Saved</button>
+        <button type="button" onclick="location.href='/view_markers';">Revert to Saved</button>
     </div>
 
     <script>
@@ -104,6 +104,8 @@
                 coordinates.push(point);
             }
         }
+
+        console.log(coordinates);
 
         // Create a polyline using the marker coordinates
         var polyline = L.polyline(coordinates, {color: 'red'}).addTo(map);
