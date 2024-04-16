@@ -1,12 +1,20 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file, send_from_directory
 from flask_simplelogin import SimpleLogin, login_required
 import json
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'something-secret'
 app.config['SIMPLELOGIN_USERNAME'] = 'admin'
 app.config['SIMPLELOGIN_PASSWORD'] = 'secret'
 SimpleLogin(app)
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
 
 @app.route('/')
 def home():
@@ -43,7 +51,7 @@ def save_markers():
         new_markers[new_index] = temp
         new_index += 1
     with open('markers.json', 'w') as f:
-        json.dump(new_markers, f)
+        json.dump(new_markers, f, indent=4)
     return redirect(url_for('view_markers') + "?saved=true")
 
 
