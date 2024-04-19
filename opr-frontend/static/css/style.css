@@ -22,9 +22,30 @@ body {
     background-color: grey;
     padding: 10px;
     border-radius: 10px;
-    width: 200px;
+    width: 220px;
     justify-content: center;
     color: white;
+}
+
+.floating-status {
+    z-index: 1000;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    justify-content: center;
+    color: black;
+    font-size: smaller;
+}
+
+.floating-control {
+    z-index: 1000;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+    justify-content: center;
+    color: black;
 }
 
 .floating-buttons:hover {

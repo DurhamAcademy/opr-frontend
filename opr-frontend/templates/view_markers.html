@@ -27,15 +27,26 @@
     </div>
 
     <div class="floating-buttons">
-        Click marker to update or delete.<br />
-        Click on map to add new marker.
-        <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
-            <input type="hidden" id="markers-field" name="markers">
-            <button type="submit">Save</button>
-        </form>
-        <button type="button" onclick="location.href='/deploy_markers';">Deploy to Robot</button>
-        <button type="button" onclick="location.href='/backup_markers';">Backup Markers</button>
-        <button type="button" onclick="location.href='/view_markers';">Revert to Saved</button>
+        <div class="floating-control">
+
+            <form id="save-markers-form" action="{{ url_for('save_markers') }}" method="post">
+                <input type="hidden" id="markers-field" name="markers">
+                <button type="submit">Save</button>
+            </form>
+            <button type="button" onclick="location.href='/deploy_markers';">Deploy to Robot</button>
+            <button type="button" onclick="location.href='/backup_markers';">Backup Markers</button>
+            <button type="button" onclick="location.href='/view_markers';">Revert to Saved</button>
+        </div>
+        <br />
+        <div class="floating-status">
+            > Click marker to update or delete.<br />
+            > Click on map to add new marker.<br />
+            <br />
+            Internal Temp: XXF<br />
+            Internal Humidity: XX%<br />
+            Last Status: <br/>
+            sjhfksjdhf<br />
+        </div>
     </div>
 
     <script>
@@ -166,7 +177,7 @@
             iconUrl: '/static/images/robot.png',
             //shadowUrl: 'leaf-shadow.png',
 
-            iconSize:     [30, 30],
+            iconSize:     [40, 40],
             shadowSize:   [50, 64],
             iconAnchor:   [22, 94],
             shadowAnchor: [4, 62],
