@@ -2,11 +2,22 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from flask_simplelogin import SimpleLogin, login_required
 import json
 import os
+import dotenv
+
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'something-secret'
-app.config['SIMPLELOGIN_USERNAME'] = 'admin'
-app.config['SIMPLELOGIN_PASSWORD'] = 'secret'
+
+# Try to get secret from .env else set default.
+try:
+    dotenv.load_dotenv(dotenv_path='.env')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config['SIMPLELOGIN_USERNAME'] = os.getenv('SIMPLELOGIN_USERNAME')
+    app.config['SIMPLELOGIN_PASSWORD'] = os.getenv('SIMPLELOGIN_PASSWORD')
+except:
+    app.config['SECRET_KEY'] = 'something-secret'
+    app.config['SIMPLELOGIN_USERNAME'] = 'admin'
+    app.config['SIMPLELOGIN_PASSWORD'] = 'secret'
+
 SimpleLogin(app)
 
 
