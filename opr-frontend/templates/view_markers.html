@@ -186,30 +186,21 @@
             popupAnchor:  [-3, -76]
         });
 
+
         L.marker([ "{{ gps_location[0] }}", "{{ gps_location[1]}}" ], {
             icon: robotIcon
         }).addTo(map);
 
         // add new marker on click of map
         function onMapClick(e) {
-
-            // Find the next available index value
-            var highestKey = -1;
-            for (var key in markers) {
-                if (markers.hasOwnProperty(key)) {
-                    var numericKey = parseInt(key);
-                    if (!isNaN(numericKey) && numericKey > highestKey) {
-                        highestKey = numericKey;
-                    }
-                }
-            }
-            highestKey = highestKey + 1;
-
             var marker = L.marker(e.latlng).addTo(map);
 
-            markers[highestKey] = {
+            markers[markers.length + 1] = {
                 lat: marker.getLatLng().lat,
-                lng: marker.getLatLng().lng
+                lng: marker.getLatLng().lng,
+                duration: 5,
+                heading: 0,
+                name: "Unnamed"
             }
         }
 
