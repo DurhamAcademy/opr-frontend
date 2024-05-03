@@ -4,27 +4,15 @@ body {
     font-family: "Source Sans 3", sans-serif;
 }
 
-.floating-upload {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 1000;
-    padding: 10px;
-    width: 300px;
-    justify-content: center;
-    background-color: grey;
-    border-radius: 10px;
-    display: ;
-}
-
 .floating-compass {
-    position: fixed;
-    top: 5px;
-    right: 5px;
     z-index: 1000;
-    padding: 10px;
-    width: 200px;
+    background-color: white;
+    padding: 1px;
+    border-radius: 10px;
+    width: 100%;
     justify-content: center;
+    color: black;
+    font-size: smaller;
 }
 
 .floating-buttons {
