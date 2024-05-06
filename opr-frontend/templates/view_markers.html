@@ -33,8 +33,9 @@
             </button>
           </div>
           <div class="modal-body">
-            <form method="post" action="/upload_markers">
-                <input type="file" name="markers" />
+              <p>Filename must be <strong>markers.json</strong></p>
+            <form method="POST" action="/upload_markers" enctype="multipart/form-data">
+                <input type="file" name="markers" accept="application/json"/>
                 <input type="submit" name="uploadFile" value="Upload" />
             </form>
           </div>

@@ -1,8 +1,18 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, send_file, send_from_directory
+from flask import (Flask,
+                   render_template,
+                   request,
+                   jsonify,
+                   redirect,
+                   url_for,
+                   send_file,
+                   send_from_directory,
+                   flash)
 from flask_simplelogin import SimpleLogin, login_required
 import json
 import os
 import dotenv
+from werkzeug.utils import secure_filename
+from fileinput import filename
 
 
 app = Flask(__name__)
@@ -144,6 +154,15 @@ def view_markers():
                            temperature=temperature,
                            humidity=humidity,
                            voltage=voltage)
+
+
+@app.route('/upload_markers', methods=['POST'])
+def upload_markers():
+    if request.method == 'POST':
+        f = request.files['markers']
+        if f.filename == 'markers.json':
+            f.save(f.filename)
+        return redirect(url_for('view_markers'))
 
 
 if __name__ == '__main__':
