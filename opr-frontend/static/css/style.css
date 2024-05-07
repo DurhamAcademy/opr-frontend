@@ -15,7 +15,20 @@ body {
     font-size: smaller;
 }
 
-.floating-buttons {
+.floating-buttons-left {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    z-index: 1000;
+    background-color: grey;
+    padding: 10px;
+    border-radius: 10px;
+    width: 220px;
+    justify-content: center;
+    color: white;
+}
+
+.floating-buttons-right {
     position: fixed;
     bottom: 15px;
     right: 15px;
