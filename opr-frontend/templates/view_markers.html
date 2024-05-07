@@ -47,6 +47,35 @@
       </div>
     </div>
 
+    <!---- time set modal ---->
+    <div class="modal fade" id="timesetModal" tabindex="-1" role="dialog" aria-labelledby="timesetModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="timesetModalLabel">Operation Time</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="/save_time">
+                <p>Timeframe robot is to automatically run.<br />
+                * Robot will finish a route if end time occurs before last marker.</p>
+                <label for="begintime">Begin Time</label>
+                <input type="time" name="begintime" value="{{ schedule_start }}"/><br />
+                <label for="endtime">End Time</label>
+                <input type="time" name="endtime" value="{{ schedule_end }}"/><br />
+                <label for="enabled">Enable</label>
+                <input type="checkbox" name="enabled" {% if schedule_enabled == "on" %} checked="checked" {% endif %}/><br />
+                <input type="submit" name="uploadFile" value="Save" />
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="floating-buttons">
         <div class="floating-compass">
@@ -71,6 +100,9 @@
             <button type="button" onclick="location.href='/view_markers';" class="btn btn-primary">
                 Revert to Saved
             </button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#timesetModal">
+                Set Operation Time
+            </button>
             <button type="button" onclick="location.href='/logout';" class="btn btn-primary">
                 Log Out
             </button>
@@ -84,7 +116,7 @@
             Internal Humidity: {{ humidity }}%<br />
             Voltage: {{ voltage }}<br />
             Last Status: <br/>
-            sjhfksjdhf<br />
+            {{ status }}<br />
         </div>
 
     </div>

@@ -140,20 +140,34 @@ def view_markers():
     gps_location = eval(d)
 
     # read current enviroment from cgbot code
-    with open('../../cgbot-opr/internal_temp_humidity.txt', 'r') as thv:
+    with open('../../cgbot-opr/internal_temp_humidity.json', 'r') as thv:
         d = thv.read()
     thv.close()
-    thvd = d.split("|")
-    temperature = thvd[0]
-    humidity = thvd[1]
-    voltage = thvd[2]
+    thvd = json.loads(d)
+    temperature = thvd['temp']
+    humidity = thvd['humidity']
+    voltage = thvd['voltage']
+
+    # read status
+    with open('../../cgbot-opr/last_status.txt', 'r') as statusfile:
+        status = statusfile.read()
+    statusfile.close()
+
+    # read current schedule
+    with open('../../cgbot-opr/gps_schedule.json', 'r') as s:
+        sched = json.load(s)
+    s.close()
 
     return render_template('view_markers.html',
                            markers=markers,
                            gps_location=gps_location,
+                           schedule_start=sched["begin"],
+                           schedule_end=sched["end"],
+                           schedule_enabled=sched["enabled"],
                            temperature=temperature,
                            humidity=humidity,
-                           voltage=voltage)
+                           voltage=voltage,
+                           status=status)
 
 
 @app.route('/upload_markers', methods=['POST'])
@@ -162,6 +176,25 @@ def upload_markers():
         f = request.files['markers']
         if f.filename == 'markers.json':
             f.save(f.filename)
+        return redirect(url_for('view_markers'))
+
+
+@app.route('/save_time', methods=['POST'])
+def save_time():
+    if request.method == 'POST':
+        j = {
+            "begin" : request.form['begintime'],
+            "end" : request.form['endtime'],
+        }
+        if 'enabled' in request.form:
+            j["enabled"] = "on"
+        else:
+            j["enabled"] = "off"
+
+        with open('../../cgbot-opr/gps_schedule.json', 'w') as f:
+            f.write(json.dumps(j))
+        f.close()
+
         return redirect(url_for('view_markers'))
 
 
