@@ -10,6 +10,7 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+    <script src="/static/js/leaflet.rotatedMarker.js"></script>
 
 
     <!-- Bootstrap CSS -->
@@ -152,6 +153,17 @@
         // get markers var from json
         var markers = {{ markers | tojson }};
 
+        // icon
+        var cameraIcon = L.icon({
+            iconUrl: '/static/images/camera.png',
+
+            iconSize:     [30, 30], // size of the icon
+            // shadowSize:   [50, 64], // size of the shadow
+            // iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+            // shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
         // Create an array to store latlng coordinates of markers for polyline
         var coordinates = [];
 
@@ -176,6 +188,8 @@
             if (markers.hasOwnProperty(index)) {
                 var marker = L.marker([markers[index].lat, markers[index].lng], {
                     draggable: true,
+                    icon: cameraIcon,
+                    rotationAngle: markers[index].heading,
                     json_id: index,
                     json_name: markers[index].name,
                     json_duration: markers[index].duration,
