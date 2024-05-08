@@ -198,11 +198,11 @@ def save_time():
         return redirect(url_for('view_markers'))
 
 
-@app.route('/download_log', methods=['GET'])
+@app.route('/download_log', methods=['POST'])
 def download_log():
-    url_params = request.args
-    log_file_date = url_params.get('date', str(datetime.date.today()))
-    logfile = "/var/log/cgbot-opr/log_" + str(log_file_date) + ".txt"
+    date = request.form['date']
+    print(date)
+    logfile = "/var/log/cgbot-opr/log_" + str(date) + ".txt"
     return send_file(logfile, as_attachment=True)
 
 
