@@ -203,7 +203,10 @@ def download_log():
     date = request.form['date']
     print(date)
     logfile = "/var/log/cgbot-opr/log_" + str(date) + ".txt"
-    return send_file(logfile, as_attachment=True)
+    if os.path.isfile(logfile):
+        return send_file(logfile, as_attachment=True)
+    else:
+        return redirect(url_for('view_markers'))
 
 
 if __name__ == '__main__':
