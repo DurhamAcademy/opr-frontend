@@ -13,7 +13,7 @@ import os
 import dotenv
 from werkzeug.utils import secure_filename
 from fileinput import filename
-
+import datetime
 
 app = Flask(__name__)
 
@@ -196,6 +196,14 @@ def save_time():
         f.close()
 
         return redirect(url_for('view_markers'))
+
+
+@app.route('/download_log', methods=['GET'])
+def download_log():
+    url_params = request.args
+    log_file_date = url_params.get('date', str(datetime.date.today()))
+    logfile = "/var/log/cgbot-opr/log_" + str(log_file_date) + ".txt"
+    return send_file(logfile, as_attachment=True)
 
 
 if __name__ == '__main__':
