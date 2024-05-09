@@ -1,7 +1,6 @@
 import motor_driver
 import gps
 import arduino
-import nes
 from dotenv import load_dotenv
 import logging
 import datetime
@@ -11,11 +10,12 @@ import json
 import config
 import threading
 import camera
+import RPi.GPIO as GPIO
+
 
 # Import env file
 load_dotenv()
 
-controller = nes.Nes()
 drive = motor_driver.Motor()
 ar = arduino.Arduino()
 
@@ -338,25 +338,7 @@ def main():
             """
             Drive mode
             """
-            if controller.get_mode() == "controller":
-                """
-                Controller Mode
-                """
-                left_speed, right_speed = controller.wpm_controller(controller.snes_input())
-                drive.set_left_speed(left_speed)
-                drive.set_right_speed(right_speed)
-
-                """
-                If select button is pressed, print coordinates
-                """
-                if controller.snes_input() == "select":
-                    try:
-                        print(gps.get_gps_coords())
-                        time.sleep(1)
-                    except Exception as e:
-                        print(e)
-
-            else:
+            if GPIO.input(config.gps_mode_switch_pin) == 1:
                 """
                 GPS Mode
                 """
@@ -366,7 +348,6 @@ def main():
                 If the battery is low, then lets set that var to True. 
                 Later we will not stay at a location for "duration", and not continue on route.
                 """
-
 
                 # don't run route if the battery is low.
                 if time.time() > next_battery_check:
@@ -413,7 +394,6 @@ def main():
                             time.sleep(i['duration'])
                         else:
                             log("Battery is low or temp exceeded, not waiting at this location.")
-
 
     finally:
         log("Main loop complete.")
