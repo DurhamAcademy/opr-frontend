@@ -14,8 +14,11 @@ import dotenv
 from werkzeug.utils import secure_filename
 from fileinput import filename
 import datetime
+from flask_socketio import SocketIO
+
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 
 # Try to get secret from .env else set default.
 try:
@@ -117,7 +120,7 @@ def deploy_markers():
         f.close()
 
         # save to robot
-        with open('../../cgbot-opr/route.json', 'w') as f:
+        with open('../robot_code/route.json', 'w') as f:
             f.write(json.dumps(deploy))
         f.close()
 
@@ -134,13 +137,13 @@ def view_markers():
         markers = json.load(f)
     f.close()
     # read current location from cgbot code
-    with open('../../cgbot-opr/gps_location.txt', 'r') as l:
+    with open('../robot_code/gps_location.txt', 'r') as l:
         d = l.read()
     l.close()
     gps_location = eval(d)
 
     # read current enviroment from cgbot code
-    with open('../../cgbot-opr/internal_temp_humidity.json', 'r') as thv:
+    with open('../robot_code/internal_temp_humidity.json', 'r') as thv:
         d = thv.read()
     thv.close()
     thvd = json.loads(d)
@@ -149,12 +152,12 @@ def view_markers():
     voltage = thvd['voltage']
 
     # read status
-    with open('../../cgbot-opr/last_status.txt', 'r') as statusfile:
+    with open('../robot_code/last_status.txt', 'r') as statusfile:
         status = statusfile.read()
     statusfile.close()
 
     # read current schedule
-    with open('../../cgbot-opr/gps_schedule.json', 'r') as s:
+    with open('../robot_code/gps_schedule.json', 'r') as s:
         sched = json.load(s)
     s.close()
 
@@ -191,7 +194,7 @@ def save_time():
         else:
             j["enabled"] = "off"
 
-        with open('../../cgbot-opr/gps_schedule.json', 'w') as f:
+        with open('../robot_code/gps_schedule.json', 'w') as f:
             f.write(json.dumps(j))
         f.close()
 
@@ -208,6 +211,30 @@ def download_log():
     else:
         return redirect(url_for('view_markers'))
 
+"""
+SocketIO Stuff
+"""
+
+
+@socketio.on('keypress')
+def handle_keypress(data):
+    key = data['key']
+    # Send key to robot control logic
+    print(f"Key pressed: {key}")
+
+
+@socketio.on('keyup')
+def handle_keyup(data):
+    key = data['key']
+    # Send key release to robot control logic
+    print(f"Key released: {key}")
+
+
+@app.route('/remote_control')
+def remote_control():
+    return render_template('remote_control.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)

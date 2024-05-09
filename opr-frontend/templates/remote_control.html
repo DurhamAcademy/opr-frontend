@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Control</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        document.addEventListener('keydown', function(event) {
+            var key = event.key;
+            socket.emit('keypress', {key: key});
+        });
+
+        document.addEventListener('keyup', function(event) {
+            var key = event.key;
+            socket.emit('keyup', {key: key});
+        });
+    </script>
+</head>
+<body>
+    <h1>Robot Control Interface</h1>
+    <p>Use arrow keys to control the robot.</p>
+</body>
+</html>
