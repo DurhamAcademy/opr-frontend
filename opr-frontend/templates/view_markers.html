@@ -52,23 +52,39 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="timesetModalLabel">Operation Time</h5>
+            <h5 class="modal-title" id="timesetModalLabel">Operation Settings</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="/save_time">
+              <div>
+                  <h5 class="modal-title">Schedule</h5>
+                  <form method="POST" action="/save_time">
                 <p>Timeframe robot is to automatically run.<br />
                 * Robot will finish a route if end time occurs before last marker.</p>
                 <label for="begintime">Begin Time</label>
                 <input type="time" name="begintime" value="{{ schedule_start }}"/><br />
                 <label for="endtime">End Time</label>
                 <input type="time" name="endtime" value="{{ schedule_end }}"/><br />
-                <label for="enabled">Enable</label>
+                <label for="enabled">Enable Schedule</label>
                 <input type="checkbox" name="enabled" {% if schedule_enabled == "on" %} checked="checked" {% endif %}/><br />
-                <input type="submit" name="uploadFile" value="Save" />
+                <input type="submit" name="uploadFile" value="Save Schedule" />
             </form>
+              </div>
+
+              <div>
+                  <hr />
+                  <h5 class="modal-title">Advanced Settings</h5>
+                  Process ID: {{ robot_code_pid }}
+                    <button type="button" onclick="location.href='/enable_robot_code';" class="btn {% if robot_code_pid > 0 %} btn-success {% else %} btn-secondary {% endif %} btn-block">
+                        Enable Robot Code
+                    </button>
+                    <button type="button" onclick="location.href='/disable_robot_code';" class="btn {% if robot_code_pid == 0 %} btn-danger {% else %} btn-secondary {% endif %} btn-block">
+                        Disable Robot Code
+                    </button>
+
+              </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -141,7 +157,7 @@
                 Revert to Saved
             </button>
             <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#timesetModal">
-                Set Operation Time
+                Operation Settings
             </button>
             <button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#logsModal">
                 Download Logs

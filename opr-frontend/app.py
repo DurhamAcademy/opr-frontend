@@ -15,6 +15,7 @@ from werkzeug.utils import secure_filename
 from fileinput import filename
 import datetime
 from flask_socketio import SocketIO
+import subprocess
 
 
 app = Flask(__name__)
@@ -32,6 +33,9 @@ except:
     app.config['SIMPLELOGIN_PASSWORD'] = 'secret'
 
 SimpleLogin(app)
+
+# Globals
+robot_code_process = None
 
 
 @app.route('/favicon.ico')
@@ -132,6 +136,8 @@ def deploy_markers():
 @app.route('/view_markers')
 @login_required
 def view_markers():
+    global robot_code_process
+
     # read markers file
     with open('markers.json', 'r') as f:
         markers = json.load(f)
@@ -161,6 +167,15 @@ def view_markers():
         sched = json.load(s)
     s.close()
 
+    # check for running code
+    try:
+        if robot_code_process:
+            robot_code = robot_code_process.pid
+        else:
+            robot_code = 0
+    except:
+        robot_code = 0
+
     return render_template('view_markers.html',
                            markers=markers,
                            gps_location=gps_location,
@@ -170,7 +185,8 @@ def view_markers():
                            temperature=temperature,
                            humidity=humidity,
                            voltage=voltage,
-                           status=status)
+                           status=status,
+                           robot_code_pid=robot_code)
 
 
 @app.route('/upload_markers', methods=['POST'])
@@ -211,8 +227,23 @@ def download_log():
     else:
         return redirect(url_for('view_markers'))
 
+
+@app.route('/enable_robot_code', methods=['GET'])
+def enable_robot_code():
+    global robot_code_process
+    robot_code_process = subprocess.Popen(["python", "../robot_code/main.py"])
+    return redirect(url_for('view_markers'))
+
+
+@app.route('/disable_robot_code', methods=['GET'])
+def disable_robot_code():
+    global robot_code_process
+    robot_code_process.terminate()
+    return redirect(url_for('view_markers'))
+
+
 """
-SocketIO Stuff
+SocketIO stuff for remote control
 """
 
 
