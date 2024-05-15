@@ -124,7 +124,7 @@ def deploy_markers():
         f.close()
 
         # save to robot
-        with open('../robot_code/route.json', 'w') as f:
+        with open('robot_code/route.json', 'w') as f:
             f.write(json.dumps(deploy))
         f.close()
 
@@ -143,13 +143,13 @@ def view_markers():
         markers = json.load(f)
     f.close()
     # read current location from cgbot code
-    with open('../robot_code/gps_location.txt', 'r') as l:
+    with open('robot_code/gps_location.txt', 'r') as l:
         d = l.read()
     l.close()
     gps_location = eval(d)
 
     # read current enviroment from cgbot code
-    with open('../robot_code/internal_temp_humidity.json', 'r') as thv:
+    with open('robot_code/internal_temp_humidity.json', 'r') as thv:
         d = thv.read()
     thv.close()
     thvd = json.loads(d)
@@ -158,12 +158,12 @@ def view_markers():
     voltage = thvd['voltage']
 
     # read status
-    with open('../robot_code/last_status.txt', 'r') as statusfile:
+    with open('robot_code/last_status.txt', 'r') as statusfile:
         status = statusfile.read()
     statusfile.close()
 
     # read current schedule
-    with open('../robot_code/gps_schedule.json', 'r') as s:
+    with open('robot_code/gps_schedule.json', 'r') as s:
         sched = json.load(s)
     s.close()
 
@@ -210,7 +210,7 @@ def save_time():
         else:
             j["enabled"] = "off"
 
-        with open('../robot_code/gps_schedule.json', 'w') as f:
+        with open('robot_code/gps_schedule.json', 'w') as f:
             f.write(json.dumps(j))
         f.close()
 
@@ -231,7 +231,7 @@ def download_log():
 @app.route('/enable_robot_code', methods=['GET'])
 def enable_robot_code():
     global robot_code_process
-    robot_code_process = subprocess.Popen(["python", "../robot_code/main.py"])
+    robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
     return redirect(url_for('view_markers'))
 
 
