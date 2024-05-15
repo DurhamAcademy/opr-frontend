@@ -10,7 +10,6 @@ import json
 import config
 import threading
 import camera
-import RPi.GPIO as GPIO
 
 
 # Import env file
@@ -336,6 +335,14 @@ def main():
             """
 
             """
+            Check charging plug is not connected.
+            """
+            if GPIO.input(config.charge_plug_sensor) == 0:
+                log("Charging plug is connected! Pausing 10 Seconds.")
+                time.sleep(10)
+                continue
+
+            """
             Drive mode
             """
             if GPIO.input(config.gps_mode_switch_pin) == 1:
@@ -354,6 +361,8 @@ def main():
                     next_battery_check = time.time() + config.battery_check_interval
                     if not check_battery():
                         log("Battery too weak to begin new GPS route")
+                        # Hold code here until we can check the battery again.
+                        time.sleep(config.battery_check_interval + 5)
                         continue
 
                 # check schedule
