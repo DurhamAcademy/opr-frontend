@@ -37,12 +37,14 @@ while True:
 
         # Stop Manual Mode
         try:
+            print("Stopping manual RC mode service.")
             manual_process.terminate()
         except:
             print("Failed or nothing to terminate for manual process.")
 
         # Start Frontend
         try:
+            print("Starting Frontend service with gunicorn.")
             frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
         except:
             print("Failed to start frontend process.")
@@ -53,11 +55,13 @@ while True:
         last_mode = 0
         # Manual Mode
         try:
+            print("Stopping Frontend service.")
             frontend_process.terminate()
         except:
             print("Failed or nothing to terminate for frontend process.")
 
         try:
+            print("Starting manual RC mode service.")
             frontend_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
         except:
             print("Failed to start manual process.")
