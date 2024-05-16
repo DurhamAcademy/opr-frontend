@@ -1,7 +1,5 @@
 import config
-import RPi.GPIO as GPIO
 import time
-import os
 import subprocess
 import RPi.GPIO as GPIO
 
