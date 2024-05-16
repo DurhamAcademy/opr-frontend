@@ -2,6 +2,9 @@ from robot_code import config
 import time
 import subprocess
 import RPi.GPIO as GPIO
+import logging
+import os
+import datetime
 
 frontend_process = None
 manual_process = None
@@ -30,6 +33,29 @@ Once installed - start with -> sudo systemctl start opr-frontend.service
 To start up at boot -> sudo systemctl enable opr-frontend.service
 
 """
+
+"""
+Logging
+TODO: Setup logrotate on this directory.
+"""
+if not os.path.isdir("/var/log/cgbot-opr"):
+    os.makedirs("/var/log/cgbot-opr")
+
+logfile = "/var/log/cgbot-opr/daemon_log_" + str(datetime.date.today()) + ".txt"
+logging.basicConfig(filename=logfile)
+logging.basicConfig(level=logging.DEBUG)
+
+
+def log(text):
+    """
+    Write to logfile and console.
+    :param text:
+    :return: none
+    """
+    logging.debug(text)
+    print(text)
+
+
 while True:
     if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
         last_mode = 1
@@ -37,17 +63,19 @@ while True:
 
         # Stop Manual Mode
         try:
-            print("Stopping manual RC mode service.")
+            log("Stopping manual RC mode service.")
+            #os.system('sudo kill -9 {}'.format(manual_process.pid))
             manual_process.terminate()
+
         except:
-            print("Failed or nothing to terminate for manual process.")
+            log("Failed or nothing to terminate for manual process.")
 
         # Start Frontend
         try:
-            print("Starting Frontend service with gunicorn.")
+            log("Starting Frontend service with gunicorn.")
             frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
         except:
-            print("Failed to start frontend process.")
+            log("Failed to start frontend process.")
 
         continue
 
@@ -55,16 +83,16 @@ while True:
         last_mode = 0
         # Manual Mode
         try:
-            print("Stopping Frontend service.")
+            log("Stopping Frontend service.")
             frontend_process.terminate()
         except:
-            print("Failed or nothing to terminate for frontend process.")
+            log("Failed or nothing to terminate for frontend process.")
 
         try:
-            print("Starting manual RC mode service.")
-            frontend_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
+            log("Starting manual RC mode service.")
+            manual_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
         except:
-            print("Failed to start manual process.")
+            log("Failed to start manual process.")
 
         continue
     else:
