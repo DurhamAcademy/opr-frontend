@@ -30,13 +30,16 @@ while True:
     if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
         last_mode = 1
         # GPS Mode
+
+        # Stop Manual Mode
         try:
             manual_process.terminate()
         except:
             print("Failed or nothing to terminate for manual process.")
 
+        # Start Frontend
         try:
-            frontend_process = subprocess.Popen(["/usr/bin/python", "robot_code/main.py"])
+            frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
         except:
             print("Failed to start frontend process.")
 
