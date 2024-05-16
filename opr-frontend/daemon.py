@@ -36,7 +36,7 @@ while True:
             print("Failed or nothing to terminate for manual process.")
 
         try:
-            frontend_process = subprocess.Popen(["/usr/bin/python", "opr-frontend/robot_code/main.py"])
+            frontend_process = subprocess.Popen(["/usr/bin/python", "robot_code/main.py"])
         except:
             print("Failed to start frontend process.")
 
@@ -51,7 +51,7 @@ while True:
             print("Failed or nothing to terminate for frontend process.")
 
         try:
-            frontend_process = subprocess.Popen(["/usr/bin/python", "opr-frontend/robot_code/enable_rc.py"])
+            frontend_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
         except:
             print("Failed to start manual process.")
 
