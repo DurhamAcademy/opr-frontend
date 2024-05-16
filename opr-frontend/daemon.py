@@ -1,4 +1,4 @@
-import config
+from robot_code import config
 import time
 import subprocess
 import RPi.GPIO as GPIO
@@ -9,7 +9,23 @@ last_mode = 2
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(config.gps_mode_switch_pin, GPIO.IN)
+"""
+Daemon
+Switches between GPS mode and manual mode. Based on switch
 
+Install to /lib/systemd/system/opr.service as:
+[Unit]
+Description=opr-frontend
+After=multi-user.target
+
+[Service]
+User=root
+WorkingDirectory=/home/pi/opr-frontend/opr-frontend
+ExecStart=/usr/bin/python daemon.py
+
+[Install]
+WantedBy=multi-user.target
+"""
 while True:
     if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
         last_mode = 1
