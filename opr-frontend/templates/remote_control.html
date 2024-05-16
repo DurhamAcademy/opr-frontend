@@ -2,25 +2,194 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robot Control</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+    <title>WebSocket Example</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Set html and body to take up the full height */
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* Make the video element fill the viewport */
+        #videoElement {
+            width: 100vw; /* 100% of the viewport width */
+            height: 100vh; /* 100% of the viewport height */
+            object-fit: cover; /* Ensure the video covers the area */
+        }
+
+        #homeicon {
+            width: 50px;
+            position: absolute;
+            height: auto;
+            margin: auto;
+            top: 80px;
+            right: 50px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="/static/css/dpad.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        let intervalID;
 
-        document.addEventListener('keydown', function(event) {
-            var key = event.key;
-            socket.emit('keypress', {key: key});
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const socket = io();
+
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
+
+            socket.on('message', (msg) => {
+                console.log('Received message:', msg);
+            });
+
+            // Listen for the 'update' event from the server
+            socket.on('update', (data) => {
+                console.log('Received update:', data);
+            });
+
+            // Function to start performing an action while the button is pressed
+            function startAction() {
+                intervalId = setInterval(() => {
+                    console.log('Button is pressed');
+                    sendMessage(); // Call sendMessage or any other function you want to perform repeatedly
+                }, 100); // Perform the action every 1 second (1000 ms)
+            }
+
+            function moveForward() {
+                intervalId = setInterval(() => {
+                    console.log('Forward button is pressed');
+                    sendMessage('forward'); // Call sendMessage or any other function you want to perform repeatedly
+                }, 100); // Perform the action every 1 second (1000 ms)
+            }
+
+            function moveReverse() {
+                intervalId = setInterval(() => {
+                    console.log('Reverse button is pressed');
+                    sendMessage('reverse'); // Call sendMessage or any other function you want to perform repeatedly
+                }, 100); // Perform the action every 1 second (1000 ms)
+            }
+
+            function moveLeft() {
+                intervalId = setInterval(() => {
+                    console.log('Left button is pressed');
+                    sendMessage('left'); // Call sendMessage or any other function you want to perform repeatedly
+                }, 100); // Perform the action every 1 second (1000 ms)
+            }
+
+            function moveRight() {
+                intervalId = setInterval(() => {
+                    console.log('Right button is pressed');
+                    sendMessage('right'); // Call sendMessage or any other function you want to perform repeatedly
+                }, 100); // Perform the action every 1 second (1000 ms)
+            }
+
+            // Function to stop performing the action when the button is released
+            function stopAction() {
+                sendMessage('stop');
+                clearInterval(intervalId);
+            }
+
+            // Set up event listeners for mousedown and mouseup on the button
+            const upbutton = document.getElementById('sendUpButton');
+            if (upbutton) {
+                upbutton.addEventListener('mousedown', moveForward);
+                upbutton.addEventListener('mouseup', stopAction);
+                upbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
+            } else {
+                console.error('Up Button element not found');
+            }
+
+            const downbutton = document.getElementById('sendDownButton');
+            if (downbutton) {
+                downbutton.addEventListener('mousedown', moveReverse);
+                downbutton.addEventListener('mouseup', stopAction);
+                downbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
+            } else {
+                console.error('Down Button element not found');
+            }
+
+            const leftbutton = document.getElementById('sendLeftButton');
+            if (leftbutton) {
+                leftbutton.addEventListener('mousedown', moveLeft);
+                leftbutton.addEventListener('mouseup', stopAction);
+                leftbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
+            } else {
+                console.error('Left Button element not found');
+            }
+
+            const rightbutton = document.getElementById('sendRightButton');
+            if (rightbutton) {
+                rightbutton.addEventListener('mousedown', moveRight);
+                rightbutton.addEventListener('mouseup', stopAction);
+                rightbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
+            } else {
+                console.error('Right Button element not found');
+            }
+
+            const stopbutton = document.getElementById('sendStopButton');
+            if (stopbutton) {
+                stopbutton.addEventListener('mousedown', stopAction);
+                stopbutton.addEventListener('mouseup', stopAction);
+                stopbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
+            } else {
+                console.error('Stop Button element not found');
+            }
+
+            function sendMessage(direction) {
+                //const message = document.getElementById('messageInput').value;
+                socket.send(direction);
+            }
+
         });
 
-        document.addEventListener('keyup', function(event) {
-            var key = event.key;
-            socket.emit('keyup', {key: key});
-        });
+
+
     </script>
 </head>
 <body>
-    <h1>Robot Control Interface</h1>
-    <p>Use arrow keys to control the robot.</p>
+
+    <div class="video-container">
+      <video id="videoElement" controls autoplay muted>
+        <source src="/static/IJFProposalVideo.mp4" type="video/mp4"/>
+      </video>
+    </div>
+    <!-- Home -->
+    <a href="/view_markers"><img src="/static/images/house.png" id="homeicon"></a>
+
+    <!-- D-Pad -->
+    <div class="wrapper">
+      <div class="center "onmousedown="moveStop()" id="sendStopButton">
+          <div class="center-circle"></div>
+      </div>
+
+      <div class="up direction" onmousedown="moveForward()" id="sendUpButton">
+        <div class="up-triangle"></div>
+      </div>
+
+      <div class="right direction" onmousedown="moveRight()" id="sendRightButton">
+        <div class="right-triangle"></div>
+      </div>
+      <div class="down direction" onmousedown="moveReverse()" id="sendDownButton">
+        <div class="down-triangle"></div>
+      </div>
+
+      <div class="left direction" onmousedown="moveLeft()" id="sendLeftButton">
+        <div class="left-triangle"></div>
+      </div>
+
+    </div>
+
+
+
+
 </body>
 </html>

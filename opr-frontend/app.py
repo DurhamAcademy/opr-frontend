@@ -15,12 +15,19 @@ import dotenv
 from werkzeug.utils import secure_filename
 from fileinput import filename
 import datetime
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit
 import subprocess
 import hashlib
 
+try:
+    import motor_control
+except ImportError as e:
+    print("Motor control is not installed, is this a Pi with GPIO?")
+    print("Import error was: ")
+    print(e)
 
-app = Flask(__name__)
+app = Flask(__name__,
+            template_folder='templates',)
 socketio = SocketIO(app)
 
 
@@ -269,51 +276,66 @@ def disable_robot_code():
     return redirect(url_for('view_markers'))
 
 
-# @app.route('/remote_robot_command', methods=['POST'])
-# def remote_robot_command():
-#     if request.headers['remote-auth'] == hashlib.md5(app.config['SIMPLELOGIN_USERNAME'] +
-#                                                      ":" +
-#                                                      app.config['SIMPLELOGIN_PASSWORD'].encode('utf-8')).hexdigest():
-#         try:
-#             data = request.json
-#             key = data.get('key')
-#             print(f"Received command: {key}")
-#             if key == 'Right':
-#                 left_speed, right_speed = nes.wpm_controller(str(key).lower())
-#                 time.sleep(1)
-#                 motors.drive_stop()
-#
-#             # Add your logic here to handle the key command
-#             return jsonify({"status": "success"}), 200
-#         except:
-#             return jsonify({"status": "failed"}), 500
-
+@app.route('/remote_control')
+def index():
+    return render_template('remote_control.html')
 
 """
 SocketIO stuff for remote control
 """
 
-# @app.route('/remote_control')
-# @login_required
-# def robot_control():
-#
-#         try:
-#             # disable remote control
-#             disable_robot_code()
-#         except:
-#             print("nothing to kill")
-#
-#         try:
-#             from robot_code import motor_driver
-#             # globals are bad so make this better
-#             global md
-#             md = motor_driver.Motor()
-#         except:
-#             print("cannot connect to motor driver")
-#
-#     return render_template('remote_control.html')
+
+@socketio.on('message')
+@login_required
+def handle_message(dir):
+    # What to do to stop
+    if dir == 'stop':
+        print('Stop!')
+        try:
+            motor_control.set_right_speed(0)
+            motor_control.set_left_speed(0)
+        except:
+            print("Unable to stop motor")
+    # What to do when moving forward.
+    if dir == 'forward':
+        print('Forward!')
+        try:
+            motor_control.set_right_speed(-motor_control.drive_speed)
+            motor_control.set_left_speed(-motor_control.drive_speed)
+        except:
+            print("Unable to drive forward")
+    # reverse
+    if dir == 'reverse':
+        print('Reverse!')
+        try:
+            motor_control.set_right_speed(motor_control.drive_speed)
+            motor_control.set_left_speed(motor_control.drive_speed)
+        except:
+            print("Unable to drive reverse")
+    # Left
+    if dir == 'left':
+        print('Left!')
+        try:
+            motor_control.set_right_speed(motor_control.drive_speed_turning)
+            motor_control.set_left_speed(-motor_control.drive_speed_turning)
+        except:
+            print("Unable to drive left")
+    # and right
+    if dir == 'right':
+        print('Right!')
+        try:
+            motor_control.set_right_speed(-motor_control.drive_speed_turning)
+            motor_control.set_left_speed(motor_control.drive_speed_turning)
+        except:
+            print("Unable to drive right")
+
+    print(f'Direction received: {dir}')
+    send(f'Echo: {dir}')
 
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
+    socketio.run(app,
+                 host='0.0.0.0',
+                 port=5000,
+                 allow_unsafe_werkzeug=True)

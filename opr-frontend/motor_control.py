@@ -7,31 +7,21 @@ motor_right_direction_pin = 27
 motor_left_speed_pin = 13
 motor_right_speed_pin = 12
 
+GPIO.setmode(GPIO.BCM)
 
-def controller(control_input):
-    try:
-        if control_input == "neutral":
-            left_speed = 0
-            right_speed = 0
-        elif control_input == "up":
-            left_speed = -drive_speed
-            right_speed = -drive_speed
-        elif control_input == "down":
-            left_speed = drive_speed
-            right_speed = drive_speed
-        elif control_input == "left":
-            left_speed = drive_speed_turning
-            right_speed = -drive_speed_turning
-        elif control_input == "right":
-            left_speed = -drive_speed_turning
-            right_speed = drive_speed_turning
-        else:
-            left_speed = 0
-            right_speed = 0
-        return left_speed, right_speed
-    except:
-        left_speed, right_speed = 0, 0
-        return left_speed, right_speed
+GPIO.setup(motor_left_direction_pin, GPIO.OUT)
+GPIO.setup(motor_right_direction_pin, GPIO.OUT)
+
+GPIO.setup(motor_left_speed_pin, GPIO.OUT)
+GPIO.setup(motor_right_speed_pin, GPIO.OUT)
+
+right_motor = GPIO.PWM(motor_right_speed_pin, 50)
+right_motor.start(0)
+left_motor = GPIO.PWM(motor_left_speed_pin, 50)
+left_motor.start(0)
+
+GPIO.output(motor_left_direction_pin, GPIO.HIGH)
+GPIO.output(motor_right_direction_pin, GPIO.HIGH)
 
 
 def set_right_speed(speed: int):
@@ -39,19 +29,12 @@ def set_right_speed(speed: int):
         GPIO.output(motor_right_direction_pin, GPIO.HIGH)
     else:
         GPIO.output(motor_right_direction_pin, GPIO.LOW)
-    self.right_motor.ChangeDutyCycle(abs(speed))
+    right_motor.ChangeDutyCycle(abs(speed))
 
-def set_left_speed(self, speed: int):
-    """
-    :param speed: Speed of left motor, negative for backwards (range unknown) TODO: Find out range
-    :return: null
-    """
 
-    self.last_motor_command = time.time()
-    self.safety_light_timeout()
-
+def set_left_speed(speed: int):
     if speed >= 0:
-        GPIO.output(config.motor_left_direction_pin, GPIO.HIGH)
+        GPIO.output(motor_left_direction_pin, GPIO.HIGH)
     else:
-        GPIO.output(config.motor_left_direction_pin, GPIO.LOW)
-    self.left_motor.ChangeDutyCycle(abs(speed))
+        GPIO.output(motor_left_direction_pin, GPIO.LOW)
+    left_motor.ChangeDutyCycle(abs(speed))
