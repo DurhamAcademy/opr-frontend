@@ -11,7 +11,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(config.gps_mode_switch_pin, GPIO.IN)
 """
 Daemon
-Switches between GPS mode and manual mode. Based on switch
+Switches between GPS mode and manual mode. Based on physical switch
 
 Install to /lib/systemd/system/opr.service as:
 [Unit]
@@ -25,6 +25,10 @@ ExecStart=/usr/bin/python daemon.py
 
 [Install]
 WantedBy=multi-user.target
+
+Once installed - start with -> sudo systemctl start opr-frontend.service
+To start up at boot -> sudo systemctl enable opr-frontend.service
+
 """
 while True:
     if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
