@@ -31,7 +31,7 @@ class Motor(object):
         self.last_motor_command = 0.00
 
         # Turn on Safety light
-        GPIO.output(config.safety_light_pin, GPIO.HIGH)
+        # GPIO.output(config.safety_light_pin, GPIO.HIGH)
 
     def safety_light_timeout(self):
         if self.last_motor_command + config.safety_light_timeout < time.time():
