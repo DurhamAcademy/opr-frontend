@@ -257,17 +257,23 @@ def check_schedule():
 
 
 def check_battery():
+    """
+    False is battery is not weak
+    :return: True or False
+    """
     v = ar.get_voltage()
     if v > 0:
         if ar.get_voltage() <= config.voltage_min_threshold:
-            print("i" + str(v))
             return True
         else:
-            print("e" + str(v))
             return False
 
 
 def check_temp():
+    """
+    True is good to go. Under temperature conditions.
+    :return:
+    """
     if ar.get_temperature() <= config.max_temperature:
         return True
     else:
@@ -358,7 +364,7 @@ def main():
             # don't run route if the battery is low.
             if time.time() > next_battery_check:
                 next_battery_check = time.time() + config.battery_check_interval
-                if not check_battery():
+                if check_battery():
                     log("Battery too weak to begin new GPS route")
                     # Hold code here until we can check the battery again.
                     time.sleep(config.battery_check_interval + 5)
@@ -396,7 +402,7 @@ def main():
                     # enable camera for recording
                     camera.enable_camera()
 
-                    if not check_battery() and not check_temp():
+                    if check_battery() and check_temp():
                         # wait for the duration specified if battery not low.
                         log("Waiting here for {} seconds.".format(str(i['duration'])))
                         time.sleep(i['duration'])
