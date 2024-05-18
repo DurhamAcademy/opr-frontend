@@ -394,15 +394,16 @@ def main():
                     go_to_position(coordinates)
                     log("Destination reached.!!!")
 
-                    # rotate to heading for recording
-                    current_heading = gps.gps_heading()
-                    log("Rotate to final heading {}.".format(i['final_heading']))
-                    rotate_to_heading(current_heading, i['final_heading'])
-
-                    # enable camera for recording
-                    camera.enable_camera()
-
                     if check_battery() and check_temp():
+
+                        # rotate to heading for recording
+                        current_heading = gps.gps_heading()
+                        log("Rotate to final heading {}.".format(i['final_heading']))
+                        rotate_to_heading(current_heading, i['final_heading'])
+
+                        # enable camera for recording
+                        camera.enable_camera()
+
                         # wait for the duration specified if battery not low.
                         log("Waiting here for {} seconds.".format(str(i['duration'])))
                         time.sleep(i['duration'])
