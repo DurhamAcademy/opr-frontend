@@ -257,10 +257,12 @@ def check_schedule():
 
 
 def check_battery():
-    if ar.get_voltage() <= config.voltage_min_threshold:
-        return True
-    else:
-        return False
+    v = ar.get_voltage()
+    if v > 0:
+        if ar.get_voltage() <= config.voltage_min_threshold:
+            return True
+        else:
+            return False
 
 
 def check_temp():
