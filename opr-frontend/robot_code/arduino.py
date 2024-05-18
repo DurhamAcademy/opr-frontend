@@ -49,7 +49,7 @@ class Arduino:
         Reads the temperature from the Arduino. Returns the temperature in degrees Celsius.
         :return: float degrees
         """
-        return float(self.read_data(4))
+        return int(self.read_data(4))
 
     def get_humidity(self):
         """
