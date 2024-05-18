@@ -10,8 +10,7 @@ import json
 import config
 import threading
 import camera
-import RPi.GPIO as GPIO
-
+import charge_port
 
 # Import env file
 load_dotenv()
@@ -338,7 +337,7 @@ def main():
             """
             Check charging plug is not connected.
             """
-            if GPIO.input(config.charge_plug_sensor) == 0:
+            if charge_port.charge_port_status():
                 log("Charging plug is connected! Pausing 10 Seconds.")
                 time.sleep(10)
                 continue
