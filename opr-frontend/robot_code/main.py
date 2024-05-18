@@ -274,7 +274,7 @@ def check_temp():
     True is good to go. Under temperature conditions.
     :return:
     """
-    if ar.get_temperature() <= config.max_temperature:
+    if ar.get_temperature() <= float(config.max_temperature):
         return True
     else:
         return False
