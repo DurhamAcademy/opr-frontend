@@ -259,6 +259,7 @@ def check_schedule():
 def check_battery():
     """
     False is battery is not weak
+    False is good to go!
     :return: True or False
     """
     v = ar.get_voltage()
@@ -394,21 +395,27 @@ def main():
                     go_to_position(coordinates)
                     log("Destination reached.!!!")
 
-                    if check_battery() and check_temp():
+                    if check_battery():
+                        # False is good.
+                        log("Battery is low, not waiting at this location.")
+                        continue
 
-                        # rotate to heading for recording
-                        current_heading = gps.gps_heading()
-                        log("Rotate to final heading {}.".format(i['final_heading']))
-                        rotate_to_heading(current_heading, i['final_heading'])
+                    if not check_temp():
+                        # True is good.
+                        log("Control temp exceeded, not waiting at this location.")
+                        continue
 
-                        # enable camera for recording
-                        camera.enable_camera()
+                    # rotate to heading for recording
+                    current_heading = gps.gps_heading()
+                    log("Rotate to final heading {}.".format(i['final_heading']))
+                    rotate_to_heading(current_heading, i['final_heading'])
 
-                        # wait for the duration specified if battery not low.
-                        log("Waiting here for {} seconds.".format(str(i['duration'])))
-                        time.sleep(i['duration'])
-                    else:
-                        log("Battery is low or temp exceeded, not waiting at this location.")
+                    # enable camera for recording
+                    camera.enable_camera()
+
+                    # wait for the duration specified if battery not low.
+                    log("Waiting here for {} seconds.".format(str(i['duration'])))
+                    time.sleep(i['duration'])
 
     finally:
         log("Main loop complete.")
