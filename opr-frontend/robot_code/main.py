@@ -260,6 +260,7 @@ def check_battery():
     v = ar.get_voltage()
     if v > 0:
         if ar.get_voltage() <= config.voltage_min_threshold:
+            print(v)
             return True
         else:
             return False
