@@ -10,6 +10,7 @@ import json
 import config
 import threading
 import camera
+import RPi.GPIO as GPIO
 
 
 # Import env file
