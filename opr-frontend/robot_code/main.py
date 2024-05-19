@@ -411,6 +411,7 @@ def main():
                     rotate_to_heading(current_heading, i['final_heading'])
 
                     # enable camera for recording
+                    log("Enabling Camera.")
                     camera.enable_camera()
 
                     # wait for the duration specified if battery not low.
