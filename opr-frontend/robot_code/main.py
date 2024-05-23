@@ -430,6 +430,7 @@ def main():
 
     finally:
         log("Main loop complete.")
+        camera.disable_camera()
         drive.cleanup()
 
 
