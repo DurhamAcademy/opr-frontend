@@ -153,13 +153,18 @@ def view_markers():
         gps_location = (0, 0)
 
     # read current enviroment from cgbot code
-    with open('robot_code/internal_temp_humidity.json', 'r') as thv:
-        d = thv.read()
-    thv.close()
-    thvd = json.loads(d)
-    temperature = thvd['temp']
-    humidity = thvd['humidity']
-    voltage = thvd['voltage']
+    try:
+        with open('robot_code/internal_temp_humidity.json', 'r') as thv:
+            d = thv.read()
+        thv.close()
+        thvd = json.loads(d)
+        temperature = thvd['temp']
+        humidity = thvd['humidity']
+        voltage = thvd['voltage']
+    except:
+        temperature = "0"
+        humidity = "0"
+        voltage = "0"
 
     # read status
     with open('robot_code/last_status.txt', 'r') as statusfile:
