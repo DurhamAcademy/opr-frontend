@@ -26,7 +26,7 @@ if not os.path.isdir("/var/log/cgbot-opr"):
     os.makedirs("/var/log/cgbot-opr")
 
 logfile = "/var/log/cgbot-opr/log_" + str(datetime.date.today()) + ".txt"
-logging.basicConfig(filename=logfile)
+logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
 
