@@ -166,10 +166,13 @@ def view_markers():
         humidity = "0"
         voltage = "0"
 
+    try:
     # read status
-    with open('robot_code/last_status.txt', 'r') as statusfile:
-        status = statusfile.read()
-    statusfile.close()
+        with open('robot_code/last_status.txt', 'r') as statusfile:
+            status = statusfile.read()
+        statusfile.close()
+    except:
+        status = "unknown-error"
 
     # read current schedule
     with open('robot_code/gps_schedule.json', 'r') as s:
