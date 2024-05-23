@@ -240,7 +240,7 @@ def download_log():
 @app.route('/enable_robot_code', methods=['GET'])
 def enable_robot_code():
     global robot_code_process
-    robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
+    robot_code_process = subprocess.Popen(["sudo", "python", "robot_code/main.py"])
     return redirect(url_for('view_markers'))
 
 
