@@ -27,10 +27,12 @@ try:
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SIMPLELOGIN_USERNAME'] = os.getenv('SIMPLELOGIN_USERNAME')
     app.config['SIMPLELOGIN_PASSWORD'] = os.getenv('SIMPLELOGIN_PASSWORD')
+    base_dir = os.getenv('OPR_BASE_DIR')
 except:
     app.config['SECRET_KEY'] = 'something-secret'
     app.config['SIMPLELOGIN_USERNAME'] = 'admin'
     app.config['SIMPLELOGIN_PASSWORD'] = 'secret'
+    base_dir = "./"
 
 SimpleLogin(app)
 
@@ -53,7 +55,7 @@ def home():
 @login_required
 def edit_marker():
     # open markers file
-    with open('markers.json', 'r') as f:
+    with open(base_dir + 'opr-frontend/markers.json', 'r') as f:
         markers = json.load(f)
     # update with new data
     for i in markers:
@@ -62,7 +64,7 @@ def edit_marker():
             markers[i]['heading'] = request.form['markerHeading']
             markers[i]['duration'] = request.form['markerDuration']
     # save back to file
-    with open('markers.json', 'w') as f:
+    with open(base_dir + 'opr-frontend/markers.json', 'w') as f:
         json.dump(markers, f)
     return redirect(url_for('view_markers'))
 
@@ -78,7 +80,7 @@ def save_markers():
         temp = markers[i]
         new_markers[new_index] = temp
         new_index += 1
-    with open('markers.json', 'w') as f:
+    with open(base_dir + 'opr-frontend/markers.json', 'w') as f:
         json.dump(new_markers, f, indent=4)
     return redirect(url_for('view_markers') + "?saved=true")
 
@@ -95,7 +97,7 @@ def backup_markers():
 @login_required
 def deploy_markers():
     try:
-        with open('markers.json', 'r') as f:
+        with open(base_dir + 'opr-frontend/markers.json', 'r') as f:
             markers = json.load(f)
         f.close()
         deploy = {}
@@ -119,12 +121,12 @@ def deploy_markers():
         deploy['coordinates'] = coordinates
 
         # save to file
-        with open('deploy.json', 'w') as f:
+        with open(base_dir + 'opr-frontend/deploy.json', 'w') as f:
             f.write(json.dumps(deploy))
         f.close()
 
         # save to robot
-        with open('robot_code/route.json', 'w') as f:
+        with open(base_dir + 'opr-frontend/robot_code/route.json', 'w') as f:
             f.write(json.dumps(deploy))
         f.close()
 
@@ -145,7 +147,7 @@ def view_markers():
 
     try:
         # read current location from cgbot code
-        with open('robot_code/gps_location.txt', 'r') as l:
+        with open(base_dir + 'opr-frontend/robot_code/gps_location.txt', 'r') as l:
             d = l.read()
         l.close()
         gps_location = eval(d)
@@ -154,7 +156,7 @@ def view_markers():
 
     # read current enviroment from cgbot code
     try:
-        with open('robot_code/internal_temp_humidity.json', 'r') as thv:
+        with open(base_dir + 'opr-frontend/robot_code/internal_temp_humidity.json', 'r') as thv:
             d = thv.read()
         thv.close()
         thvd = json.loads(d)
@@ -168,14 +170,14 @@ def view_markers():
 
     try:
     # read status
-        with open('robot_code/last_status.txt', 'r') as statusfile:
+        with open(base_dir + 'opr-frontend/robot_code/last_status.txt', 'r') as statusfile:
             status = statusfile.read()
         statusfile.close()
     except:
         status = "unknown-error"
 
     # read current schedule
-    with open('robot_code/gps_schedule.json', 'r') as s:
+    with open(base_dir + 'opr-frontend/robot_code/gps_schedule.json', 'r') as s:
         sched = json.load(s)
     s.close()
 
@@ -222,7 +224,7 @@ def save_time():
         else:
             j["enabled"] = "off"
 
-        with open('robot_code/gps_schedule.json', 'w') as f:
+        with open(base_dir + 'opr-frontend/robot_code/gps_schedule.json', 'w') as f:
             f.write(json.dumps(j))
         f.close()
 

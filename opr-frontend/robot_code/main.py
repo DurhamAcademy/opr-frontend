@@ -14,6 +14,8 @@ import charge_port
 
 # Import env file
 load_dotenv()
+load_dotenv(dotenv_path='../.env')
+base_dir = os.getenv('OPR_BASE_DIR')
 
 drive = motor_driver.Motor()
 ar = arduino.Arduino()
@@ -37,7 +39,7 @@ def log(text):
     :return: none
     """
     logging.debug(text)
-    with open('last_status.txt', 'w') as f:
+    with open(base_dir + 'opr-frontend/robot_code/last_status.txt', 'w') as f:
         f.write(str(text))
     f.close()
     print(text)
@@ -72,7 +74,7 @@ def get_routes():
     Load routes from json
     :return: routes
     """
-    with open("route.json") as route_file:
+    with open(base_dir + 'opr-frontend/robot_code/route.json') as route_file:
         route = json.load(route_file)
     return route
 
@@ -238,7 +240,7 @@ def check_schedule():
     :return: True or False
     """
     try:
-        with open("gps_schedule.json", "r") as j:
+        with open(base_dir + 'opr-frontend/robot_code/gps_schedule.json', "r") as j:
             d = j.read()
             d = json.loads(d)
         j.close()
@@ -293,7 +295,7 @@ def store_internal_enviro():
         "humidity": str(ar.get_humidity()),
         "voltage": str(ar.get_voltage())
     }
-    with open('internal_temp_humidity.json', 'w') as f:
+    with open(base_dir + 'opr-frontend/robot_code/internal_temp_humidity.json', 'w') as f:
         f.write(json.dumps(j))
     f.close()
 
@@ -305,7 +307,7 @@ def store_location():
     :return:
     """
     threading.Timer(config.frontend_store_data_interval, store_location).start()
-    with open('./gps_location.txt', 'w') as f:
+    with open(base_dir + 'opr-frontend/robot_code/gps_location.txt', 'w') as f:
         f.write(str(gps.get_gps_coords()))
     f.close()
 
