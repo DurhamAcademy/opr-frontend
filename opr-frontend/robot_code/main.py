@@ -427,6 +427,8 @@ def main():
                     # wait for the duration specified if battery not low.
                     log("Waiting here for {} seconds.".format(str(i['duration'])))
                     time.sleep(i['duration'])
+                    log("Disabling Camera.")
+                    camera.disable_camera()
 
     finally:
         log("Main loop complete.")
