@@ -142,11 +142,15 @@ def view_markers():
     with open('markers.json', 'r') as f:
         markers = json.load(f)
     f.close()
-    # read current location from cgbot code
-    with open('robot_code/gps_location.txt', 'r') as l:
-        d = l.read()
-    l.close()
-    gps_location = eval(d)
+
+    try:
+        # read current location from cgbot code
+        with open('robot_code/gps_location.txt', 'r') as l:
+            d = l.read()
+        l.close()
+        gps_location = eval(d)
+    except:
+        gps_location = (0, 0)
 
     # read current enviroment from cgbot code
     with open('robot_code/internal_temp_humidity.json', 'r') as thv:
