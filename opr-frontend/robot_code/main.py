@@ -305,7 +305,7 @@ def store_location():
     :return:
     """
     threading.Timer(config.frontend_store_data_interval, store_location).start()
-    with open('gps_location.txt', 'w') as f:
+    with open('./gps_location.txt', 'w') as f:
         f.write(str(gps.get_gps_coords()))
     f.close()
 
