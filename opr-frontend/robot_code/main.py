@@ -382,8 +382,16 @@ def main():
 
             # beginning of the route.
             if check_schedule():
+
                 route = get_routes()
                 for i in route['coordinates']:
+
+                    # Do we have a valid signal?
+                    gps_check = gps.get_gps_coords()
+                    if gps_check[0] == 0.0 or gps_check[1] == 0.0:
+                        log("No GPS Signal")
+                        continue
+
                     log("Going to location: {}.".format(i['label']))
                     log("Coordinates: {}.".format(i['coordinates']))
 
