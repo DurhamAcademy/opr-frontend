@@ -204,6 +204,7 @@ def view_markers():
 
 
 @app.route('/upload_markers', methods=['POST'])
+@login_required
 def upload_markers():
     if request.method == 'POST':
         f = request.files['markers']
@@ -213,6 +214,7 @@ def upload_markers():
 
 
 @app.route('/save_time', methods=['POST'])
+@login_required
 def save_time():
     if request.method == 'POST':
         j = {
@@ -232,6 +234,7 @@ def save_time():
 
 
 @app.route('/download_log', methods=['POST'])
+@login_required
 def download_log():
     date = request.form['date']
     print(date)
@@ -243,6 +246,7 @@ def download_log():
 
 
 @app.route('/enable_robot_code', methods=['GET'])
+@login_required
 def enable_robot_code():
     global robot_code_process
     robot_code_process = subprocess.Popen(["sudo", "python", "robot_code/main.py"])
@@ -250,6 +254,7 @@ def enable_robot_code():
 
 
 @app.route('/disable_robot_code', methods=['GET'])
+@login_required
 def disable_robot_code():
     global robot_code_process
     robot_code_process.terminate()
@@ -262,13 +267,20 @@ SocketIO stuff for remote control
 
 
 @socketio.on('keypress')
+@login_required
 def handle_keypress(data):
+    global md
+
     key = data['key']
     # Send key to robot control logic
     print(f"Key pressed: {key}")
 
+    if key == "ArrowUp":
+        md.drive_forward()
+
 
 @socketio.on('keyup')
+@login_required
 def handle_keyup(data):
     key = data['key']
     # Send key release to robot control logic
@@ -276,7 +288,16 @@ def handle_keyup(data):
 
 
 @app.route('/remote_control')
+@login_required
 def remote_control():
+    
+    # disable remote control
+    disable_robot_code()
+    from robot_code import motor_driver
+    # globals are bad so make this better
+    global md
+    md = motor_driver.Motor()
+
     return render_template('remote_control.html')
 
 
