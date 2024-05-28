@@ -185,10 +185,33 @@ def go_to_position(target_pos: tuple):
         print("targetheading: " + str(target_heading))
         rotate_to_heading(current_heading, target_heading)
 
-        drive.drive_forward()
-        time.sleep(config.gps_heading_check_interval)
+        # Drive forward config.gps_heading_check_interval seconds. check obstacle every
+        # .5 seconds.
+        time_count = 0
+        while time_count <= config.gps_heading_check_interval:
+            if not check_obstacle():
+                drive.drive_forward()
+            else:
+                drive.drive_stop()
+
+            time.sleep(.5)
+            time_count += .5
 
     drive.drive_stop()
+
+
+def check_obstacle():
+    """
+    Check the front of the robot to see if there is an obstacle.
+    :return: True if obstacle is detected, False otherwise.
+    """
+    reading = ar.get_ultrasonic()
+    if 40 < reading[0] < 100:
+        return True
+    if 40 < reading[1] < 100:
+        return True
+    else:
+        return False
 
 
 def check_stuck():
