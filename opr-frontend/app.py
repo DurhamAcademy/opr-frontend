@@ -290,13 +290,18 @@ def handle_keyup(data):
 @app.route('/remote_control')
 @login_required
 def remote_control():
-    
-    # disable remote control
-    disable_robot_code()
-    from robot_code import motor_driver
-    # globals are bad so make this better
-    global md
-    md = motor_driver.Motor()
+    try:
+        # disable remote control
+        disable_robot_code()
+    except:
+        print("nothing to kill")
+    try:
+        from robot_code import motor_driver
+        # globals are bad so make this better
+        global md
+        md = motor_driver.Motor()
+    except:
+        print("cannot connect to motor driver")
 
     return render_template('remote_control.html')
 
