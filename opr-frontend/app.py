@@ -275,7 +275,7 @@ def handle_keypress(data):
     # Send key to robot control logic
     print(f"Key pressed: {key}")
 
-    if key == "ArrowUp":
+    if key is "ArrowUp":
         md.drive_forward()
 
 
