@@ -184,10 +184,10 @@ def go_to_position(target_pos: tuple):
         target_heading = gps.calculate_initial_compass_bearing(current_pos, target_pos)
         print("targetheading: " + str(target_heading))
         rotate_to_heading(current_heading, target_heading)
+
         drive.drive_forward()
-        print("start forward")
-        time.sleep(1)
-        print("stop forward")
+        time.sleep(config.gps_heading_check_interval)
+
     drive.drive_stop()
 
 
@@ -389,7 +389,7 @@ def main():
                     # Do we have a valid signal?
                     gps_check = gps.get_gps_coords()
                     if gps_check[0] == 0.0 or gps_check[1] == 0.0:
-                        log("No GPS Signal")
+                        log("No GPS Signal! Null Island.")
                         continue
 
                     log("Going to location: {}.".format(i['label']))
