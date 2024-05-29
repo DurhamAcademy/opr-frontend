@@ -15,6 +15,8 @@ try:
 
         ramped_left_speed, ramped_right_speed = 0, 0
 
+        # There has to be a better way to implement ramping.
+        # This is a quick and dirty way.
         while button_input != previous_input:
             if left_speed > 0:
                 if ramped_left_speed <= left_speed:
