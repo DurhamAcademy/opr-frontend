@@ -10,13 +10,26 @@ try:
         button_input = controller.snes_input()
         print("button input : " + button_input)
         left_speed, right_speed = controller.wpm_controller(button_input)
+        drive.set_left_speed(0)
+        drive.set_right_speed(0)
+
         ramped_left_speed, ramped_right_speed = 0, 0
 
         while button_input != previous_input:
-            if ramped_left_speed < left_speed:
-                ramped_left_speed += 1
-            if ramped_right_speed < right_speed:
-                ramped_right_speed += 1
+            if left_speed > 0:
+                if ramped_left_speed <= left_speed:
+                    ramped_left_speed += 1
+            else:
+                if ramped_left_speed >= left_speed:
+                    ramped_left_speed -= 1
+
+            if right_speed > 0:
+                if ramped_right_speed <= right_speed:
+                    ramped_right_speed += 1
+            else:
+                if ramped_right_speed >= right_speed:
+                    ramped_right_speed -= 1
+
             print(ramped_left_speed, ramped_right_speed)
             drive.set_left_speed(ramped_left_speed)
             drive.set_right_speed(ramped_right_speed)
