@@ -5,7 +5,7 @@ motor_left_direction_pin = 17
 motor_right_direction_pin = 27
 motor_left_speed_pin = 13
 motor_right_speed_pin = 12
-drive_speed = 100
+drive_speed = 80
 drive_speed_turning = 30
 # what pin is the safety light on?
 safety_light_pin = 22
