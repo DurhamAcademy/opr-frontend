@@ -8,7 +8,7 @@ try:
     previous_input = "neutral"
     while True:
         button_input = controller.snes_input()
-        print(button_input)
+        print("button input : " + button_input)
         left_speed, right_speed = controller.wpm_controller(button_input)
         ramped_left_speed, ramped_right_speed = 0, 0
 
@@ -25,6 +25,7 @@ try:
             button_input = controller.snes_input()
 
         previous_input = button_input
+        print("previous input : " + previous_input)
 
 finally:
     drive.cleanup()
