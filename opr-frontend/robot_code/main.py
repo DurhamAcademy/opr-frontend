@@ -417,7 +417,7 @@ def main():
                         continue
 
                     log("Going to location: {}.".format(i['label']))
-                    log("Coordinates: {}.".format(i['coordinates']))
+                    #log("Coordinates: {}.".format(i['coordinates']))
 
                     # convert to tuple
                     coordinates = eval(i['coordinates'])
