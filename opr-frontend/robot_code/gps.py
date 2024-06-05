@@ -16,7 +16,7 @@ declination = -12.83
 port = serial.Serial('/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GNSS_receiver-if00', baudrate=38400,
                      timeout=1)
 gps = UbloxGps(port)
-prev_positions = {}
+most_recent_pos = (0, 0)
 
 def run():
     try:
@@ -74,12 +74,14 @@ def get_gps_coords():
     get GPS coordinates from ublox gps interface
     :return: array: [(latitude, longitude )]
     """
+    global most_recent_pos
     try:
         coords = gps.geo_coords()
-        prev_positions[time.time()] = (coords.lat, coords.lon)
+        most_recent_pos = (coords.lat, coords.long)
         return coords.lat, coords.lon
     except (ValueError, IOError) as err:
         print(err)
+        return most_recent_pos
 
 
 def calculate_initial_compass_bearing(point_a, point_b):
