@@ -5,7 +5,6 @@ import board
 import time
 import config
 import qmc5883l as qmc5883
-import threading
 
 i2c = board.I2C()
 qmc = qmc5883.QMC5883L(i2c)
