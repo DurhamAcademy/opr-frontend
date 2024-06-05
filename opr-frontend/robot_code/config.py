@@ -24,7 +24,7 @@ turning_degree_accuracy = 7
 # what is considered to low in battery voltage to continue functioning?
 voltage_min_threshold = 9
 # how long to drive forward before checking heading again.
-gps_heading_check_interval = 5
+gps_heading_check_interval = 3
 # how often to read the ultrasonic sensors
 ultrasonic_check_interval = 3
 # how often to save gps coords, temp, and humidity to text files for frontend.
