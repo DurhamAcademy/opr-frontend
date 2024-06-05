@@ -288,12 +288,15 @@ def check_battery():
     False is good to go!
     :return: True or False
     """
-    v = ar.get_voltage()
-    if v > 0:
-        if ar.get_voltage() <= config.voltage_min_threshold:
-            return True
-        else:
-            return False
+    try:
+        v = ar.get_voltage()
+        if v > 0:
+            if ar.get_voltage() <= config.voltage_min_threshold:
+                return True
+            else:
+                return False
+    except:
+        return False
 
 
 def check_temp():
@@ -301,10 +304,13 @@ def check_temp():
     True is good to go. Under temperature conditions.
     :return:
     """
-    if ar.get_temperature() <= float(config.max_temperature):
+    try:
+        if ar.get_temperature() <= float(config.max_temperature):
+            return True
+        else:
+            return False
+    except:
         return True
-    else:
-        return False
 
 
 def store_internal_enviro():
@@ -314,14 +320,17 @@ def store_internal_enviro():
     :return: None
     """
     threading.Timer(config.frontend_store_data_interval, store_internal_enviro).start()
-    j = {
-        "temp": str(ar.get_temperature()),
-        "humidity": str(ar.get_humidity()),
-        "voltage": str(ar.get_voltage())
-    }
-    with open(base_dir + 'opr-frontend/robot_code/internal_temp_humidity.json', 'w') as f:
-        f.write(json.dumps(j))
-    f.close()
+    try:
+        j = {
+            "temp": str(ar.get_temperature()),
+            "humidity": str(ar.get_humidity()),
+            "voltage": str(ar.get_voltage())
+        }
+        with open(base_dir + 'opr-frontend/robot_code/internal_temp_humidity.json', 'w') as f:
+            f.write(json.dumps(j))
+        f.close()
+    except:
+        log("Unable to store enviroment data")
 
 
 def store_location():
@@ -331,9 +340,12 @@ def store_location():
     :return:
     """
     threading.Timer(config.frontend_store_data_interval, store_location).start()
-    with open(base_dir + 'opr-frontend/robot_code/gps_location.txt', 'w') as f:
-        f.write(str(gps.get_gps_coords()))
-    f.close()
+    try:
+        with open(base_dir + 'opr-frontend/robot_code/gps_location.txt', 'w') as f:
+            f.write(str(gps.get_gps_coords()))
+        f.close()
+    except:
+        log("Unable to store location")
 
 
 def main():
