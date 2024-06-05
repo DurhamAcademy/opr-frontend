@@ -444,6 +444,9 @@ def main():
                     log("Rotate to final heading {}.".format(i['final_heading']))
                     rotate_to_heading(current_heading, i['final_heading'])
 
+                    # wait to settle
+                    time.sleep(3)
+
                     # enable camera for recording
                     log("Enabling Camera.")
                     camera.enable_camera()
