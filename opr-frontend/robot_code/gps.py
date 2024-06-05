@@ -77,7 +77,7 @@ def get_gps_coords():
     global most_recent_pos
     try:
         coords = gps.geo_coords()
-        most_recent_pos = (coords.lat, coords.long)
+        most_recent_pos = (coords.lat, coords.lon)
         return coords.lat, coords.lon
     except (ValueError, IOError) as err:
         print(err)
