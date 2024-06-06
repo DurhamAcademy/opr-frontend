@@ -17,6 +17,7 @@ port = serial.Serial('/dev/serial/by-id/usb-u-blox_AG_-_www.u-blox.com_u-blox_GN
 gps = UbloxGps(port)
 most_recent_pos = (0, 0)
 
+
 def run():
     try:
         print("Listenting for UBX Messages.")

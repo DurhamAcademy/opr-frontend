@@ -464,7 +464,12 @@ def main():
                     camera.enable_camera()
 
                     # wait for the duration specified if battery not low.
-                    log("Waiting here for {} seconds.".format(str(i['duration'])))
+                    today = datetime.datetime.now()
+                    future_date = today + datetime.timedelta(seconds=int(i['duration']))
+                    log("Waiting here for {} seconds until {}.".format(
+                        str(i['duration']),
+                        str(future_date.strftime('%I:%M:%S'))
+                    ))
                     time.sleep(i['duration'])
                     log("Disabling Camera.")
                     camera.disable_camera()
