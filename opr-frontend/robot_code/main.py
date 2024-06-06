@@ -118,7 +118,7 @@ def rotate_to_heading(current_heading, target_heading):
     if rotation_dir[1] > config.turning_degree_accuracy:
         # What is current reading from compass?
         current_compass = (gps.get_heading()) % 360
-        print("start", current_compass)
+        #print("start", current_compass)
 
         # Could consolidate with no ifs if you use negatives instead of left or right (-1 for left, 1 for right)
         # Would need to modify turn function to take in -35 to turn left
@@ -182,7 +182,7 @@ def go_to_position(target_pos: tuple):
         current_heading = gps.gps_heading()
         # Use heading from GPS to determine a target_heading to destination coordinates
         target_heading = gps.calculate_initial_compass_bearing(current_pos, target_pos)
-        print("targetheading: " + str(target_heading))
+        # print("targetheading: " + str(target_heading))
         rotate_to_heading(current_heading, target_heading)
 
         # Drive forward config.gps_heading_check_interval seconds. check obstacle every
