@@ -192,6 +192,7 @@ def go_to_position(target_pos: tuple):
             if not check_obstacle():
                 drive.drive_forward()
             else:
+                log("Obstacle detected.")
                 drive.drive_stop()
 
             time.sleep(.5)
