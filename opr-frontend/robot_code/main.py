@@ -189,8 +189,7 @@ def go_to_position(target_pos: tuple):
         # .5 seconds.
         time_count = 0
         while time_count <= config.gps_heading_check_interval:
-            # if not check_obstacle():
-            if True:
+            if not check_obstacle():
                 drive.drive_forward()
             else:
                 drive.drive_stop()
@@ -206,12 +205,15 @@ def check_obstacle():
     Check the front of the robot to see if there is an obstacle.
     :return: True if obstacle is detected, False otherwise.
     """
-    reading = ar.get_ultrasonic()
-    if 40 < reading[0] < 100:
-        return True
-    if 40 < reading[1] < 100:
-        return True
-    else:
+    try:
+        reading = ar.get_ultrasonic()
+        if 40 < reading[0] < 100:
+            return True
+        if 40 < reading[1] < 100:
+            return True
+        else:
+            return False
+    except:
         return False
 
 
@@ -471,6 +473,7 @@ def main():
                         str(future_date.strftime('%I:%M:%S'))
                     ))
                     time.sleep(i['duration'])
+
                     log("Disabling Camera.")
                     camera.disable_camera()
 
