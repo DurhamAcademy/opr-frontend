@@ -261,6 +261,15 @@ def disable_robot_code():
     return redirect(url_for('view_markers'))
 
 
+@app.route('/command', methods=['POST'])
+def command():
+    data = request.json
+    key = data.get('key')
+    print(f"Received command: {key}")
+    # Add your logic here to handle the key command
+    return jsonify({"status": "success"}), 200
+
+
 """
 SocketIO stuff for remote control
 """
