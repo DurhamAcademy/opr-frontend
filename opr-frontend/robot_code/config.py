@@ -32,7 +32,7 @@ frontend_store_data_interval = 8
 # how close the ultrasonics can read without triggering
 ultra_alert_distance = 30
 # accepted distance from desired point
-point_radius_meters = 3.5
+point_radius_meters = 2
 # how often to check the schedule in seconds
 schedule_check_interval = 60
 # how often to check low battery in seconds
