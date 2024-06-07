@@ -17,7 +17,8 @@ from fileinput import filename
 import datetime
 from flask_socketio import SocketIO
 import subprocess
-from robot_code import motor_driver, config
+from robot_code import motor_driver
+from robot_code import config
 
 
 app = Flask(__name__)
