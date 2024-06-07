@@ -17,13 +17,12 @@ from fileinput import filename
 import datetime
 from flask_socketio import SocketIO
 import subprocess
-from robot_code import motor_driver
+import motor_control
 
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-motors = motor_driver.Motor
 
 # Try to get secret from .env else set default.
 try:
@@ -265,19 +264,18 @@ def disable_robot_code():
     return redirect(url_for('view_markers'))
 
 
-@app.route('/command', methods=['POST'])
-def command():
-    global motors
-    data = request.json
-    key = data.get('key')
-    print(f"Received command: {key}")
-    if key == 'Right':
-        motors.drive_turn_right(speed=30)
-        time.sleep(1)
-        motors.drive_stop()
-
-    # Add your logic here to handle the key command
-    return jsonify({"status": "success"}), 200
+# @app.route('/command', methods=['POST'])
+# def command():
+#     data = request.json
+#     key = data.get('key')
+#     print(f"Received command: {key}")
+#     if key == 'Right':
+#         left_speed, right_speed = nes.wpm_controller(str(key).lower())
+#         time.sleep(1)
+#         motors.drive_stop()
+#
+#     # Add your logic here to handle the key command
+#     return jsonify({"status": "success"}), 200
 
 
 """
