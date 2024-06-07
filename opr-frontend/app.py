@@ -23,7 +23,7 @@ from robot_code import motor_driver, config
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-motor_driver = motor_driver.Motor
+motors = motor_driver.Motor
 
 # Try to get secret from .env else set default.
 try:
@@ -271,9 +271,9 @@ def command():
     key = data.get('key')
     print(f"Received command: {key}")
     if key == 'Right':
-        motor_driver.drive_turn_right(30)
+        motors.drive_turn_right(30)
         time.sleep(1)
-        motor_driver.drive_stop()
+        motors.drive_stop()
 
 
     # Add your logic here to handle the key command
