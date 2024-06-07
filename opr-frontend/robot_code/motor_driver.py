@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-import config
+from . import config
 import time
 
 
