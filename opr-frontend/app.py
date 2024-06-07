@@ -18,7 +18,6 @@ import datetime
 from flask_socketio import SocketIO
 import subprocess
 from robot_code import motor_driver
-from robot_code import config
 
 
 app = Flask(__name__)
@@ -272,7 +271,7 @@ def command():
     key = data.get('key')
     print(f"Received command: {key}")
     if key == 'Right':
-        motors.drive_turn_right(30)
+        motors.drive_turn_right(speed=30)
         time.sleep(1)
         motors.drive_stop()
 
