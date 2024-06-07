@@ -267,6 +267,7 @@ def disable_robot_code():
 
 @app.route('/command', methods=['POST'])
 def command():
+    global motors
     data = request.json
     key = data.get('key')
     print(f"Received command: {key}")
@@ -274,7 +275,6 @@ def command():
         motors.drive_turn_right(speed=30)
         time.sleep(1)
         motors.drive_stop()
-
 
     # Add your logic here to handle the key command
     return jsonify({"status": "success"}), 200
