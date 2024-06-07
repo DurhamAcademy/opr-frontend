@@ -9,6 +9,7 @@ from flask import (Flask,
                    flash)
 from flask_simplelogin import SimpleLogin, login_required
 import json
+import time
 import os
 import dotenv
 from werkzeug.utils import secure_filename
@@ -16,10 +17,13 @@ from fileinput import filename
 import datetime
 from flask_socketio import SocketIO
 import subprocess
+from robot_code import motor_driver, config
 
 
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+motor_driver = motor_driver.Motor
 
 # Try to get secret from .env else set default.
 try:
@@ -266,6 +270,12 @@ def command():
     data = request.json
     key = data.get('key')
     print(f"Received command: {key}")
+    if key == 'Right':
+        motor_driver.drive_turn_right(30)
+        time.sleep(1)
+        motor_driver.drive_stop()
+
+
     # Add your logic here to handle the key command
     return jsonify({"status": "success"}), 200
 
@@ -278,14 +288,9 @@ SocketIO stuff for remote control
 @socketio.on('keypress')
 @login_required
 def handle_keypress(data):
-    global md
-
     key = data['key']
     # Send key to robot control logic
     print(f"Key pressed: {key}")
-
-    if key is "ArrowUp":
-        md.drive_forward()
 
 
 @socketio.on('keyup')
