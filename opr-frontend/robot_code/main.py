@@ -32,16 +32,18 @@ logging.basicConfig(filename=logfile, encoding='utf-8', level=logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
 
-def log(text):
+def log(text, logonly=False):
     """
     Write to logfile and console.
+    :param logonly:
     :param text:
     :return: none
     """
     logging.debug(text)
-    with open(base_dir + 'opr-frontend/robot_code/last_status.txt', 'w') as f:
-        f.write(str(text))
-    f.close()
+    if not logonly:
+        with open(base_dir + 'opr-frontend/robot_code/last_status.txt', 'w') as f:
+            f.write(str(text))
+        f.close()
     print(text)
 
 
@@ -123,7 +125,7 @@ def rotate_to_heading(current_heading, target_heading):
         # Could consolidate with no ifs if you use negatives instead of left or right (-1 for left, 1 for right)
         # Would need to modify turn function to take in -35 to turn left
         if rotation_dir[0] == "left":
-            log("Turning left for course correction")
+            log("Turning left for course correction", logonly=True)
             # What is the destination degrees on the compass in relation to target_heading? / subtract for left turn
             dest_compass = (current_compass - rotation_dir[1]) % 360
             # speed = num_to_range(rotation_dir[1], 0, 360, 30, 50)
@@ -134,7 +136,7 @@ def rotate_to_heading(current_heading, target_heading):
         else:
             # What is the destination degrees on the compass in relation to target_heading? / add for right turn
             dest_compass = (current_compass + rotation_dir[1]) % 360
-            log("Turning right for course correction")
+            log("Turning right for course correction", logonly=True)
             # speed = num_to_range(rotation_dir[1], 0, 360, 30, 50)
             while not within_range_degrees(current_compass, dest_compass):
                 drive.drive_turn_right(config.drive_speed_turning)
@@ -372,10 +374,6 @@ def main():
     
     """
     try:
-        # last_print = 0
-        # ultras = ar.get_ultrasonic()
-        # simple_check(ultras)
-        # print("done")
         while True:
             """
             Check safety light timeout
