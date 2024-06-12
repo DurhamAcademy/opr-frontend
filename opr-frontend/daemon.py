@@ -63,6 +63,9 @@ Just start both mode
 frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
 manual_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
 
+while True:
+    time.sleep(60)
+
 # while True:
 #     if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
 #         last_mode = 1
