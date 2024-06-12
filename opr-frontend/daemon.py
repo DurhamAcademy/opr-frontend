@@ -56,60 +56,60 @@ def log(text):
     print(text)
 
 
-"""
-Just start both mode
-"""
-
-frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
-manual_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
+# """
+# Just start both mode
+# """
+#
+# frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
+# manual_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
+#
+# while True:
+#     time.sleep(60)
 
 while True:
-    time.sleep(60)
+    if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
+        last_mode = 1
+        # GPS Mode
 
-# while True:
-#     if GPIO.input(config.gps_mode_switch_pin) == 1 and (last_mode == 0 or last_mode == 2):
-#         last_mode = 1
-#         # GPS Mode
-#
-#         # Stop Manual Mode
-#         try:
-#             log("Stopping manual RC mode service.")
-#             #os.system('sudo kill -9 {}'.format(manual_process.pid))
-#             manual_process.terminate()
-#
-#         except:
-#             log("Failed or nothing to terminate for manual process.")
-#
-#         # Start Frontend
-#         try:
-#             log("Starting Frontend service with gunicorn.")
-#             frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
-#         except:
-#             log("Failed to start frontend process.")
-#
-#         continue
-#
-#     elif GPIO.input(config.gps_mode_switch_pin) == 0 and (last_mode == 1 or last_mode == 2):
-#         last_mode = 0
-#         # Manual Mode
-#         try:
-#             log("Stopping Frontend service.")
-#             frontend_process.terminate()
-#         except:
-#             log("Failed or nothing to terminate for frontend process.")
-#
-#         try:
-#             log("Starting manual RC mode service.")
-#             manual_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
-#         except:
-#             log("Failed to start manual process.")
-#
-#         continue
-#     else:
-#         # Nothing to do. Pausing some.
-#         time.sleep(3)
-#
-#
-#
-#
-#
+        # Stop Manual Mode
+        try:
+            log("Stopping manual RC mode service.")
+            #os.system('sudo kill -9 {}'.format(manual_process.pid))
+            manual_process.terminate()
+
+        except:
+            log("Failed or nothing to terminate for manual process.")
+
+        # Start Frontend
+        try:
+            log("Starting Frontend service with gunicorn.")
+            frontend_process = subprocess.Popen(["/usr/local/bin/gunicorn", "app:app"])
+        except:
+            log("Failed to start frontend process.")
+
+        continue
+
+    elif GPIO.input(config.gps_mode_switch_pin) == 0 and (last_mode == 1 or last_mode == 2):
+        last_mode = 0
+        # Manual Mode
+        try:
+            log("Stopping Frontend service.")
+            frontend_process.terminate()
+        except:
+            log("Failed or nothing to terminate for frontend process.")
+
+        try:
+            log("Starting manual RC mode service.")
+            manual_process = subprocess.Popen(["/usr/bin/python", "robot_code/enable_rc.py"])
+        except:
+            log("Failed to start manual process.")
+
+        continue
+    else:
+        # Nothing to do. Pausing some.
+        time.sleep(3)
+
+
+
+
+
