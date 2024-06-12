@@ -17,6 +17,7 @@ from fileinput import filename
 import datetime
 from flask_socketio import SocketIO
 import subprocess
+import hashlib
 
 
 app = Flask(__name__)
@@ -39,7 +40,8 @@ except:
 SimpleLogin(app)
 
 # Globals
-robot_code_process = None
+# Start Robot Code by Default
+robot_code_process = subprocess.Popen(["sudo", "python", "robot_code/main.py"])
 
 
 @app.route('/favicon.ico')
@@ -166,9 +168,9 @@ def view_markers():
         humidity = thvd['humidity']
         voltage = thvd['voltage']
     except:
-        temperature = "0"
-        humidity = "0"
-        voltage = "0"
+        temperature = "?"
+        humidity = "?"
+        voltage = "?"
 
     try:
     # read status
@@ -259,62 +261,57 @@ def enable_robot_code():
 @login_required
 def disable_robot_code():
     global robot_code_process
-    robot_code_process.terminate()
+    try:
+        if robot_code_process.terminate():
+            robot_code_process = 0
+    except:
+        print("Unable to stop robot_code")
     return redirect(url_for('view_markers'))
 
 
-# @app.route('/command', methods=['POST'])
-# def command():
-#     data = request.json
-#     key = data.get('key')
-#     print(f"Received command: {key}")
-#     if key == 'Right':
-#         left_speed, right_speed = nes.wpm_controller(str(key).lower())
-#         time.sleep(1)
-#         motors.drive_stop()
+# @app.route('/remote_robot_command', methods=['POST'])
+# def remote_robot_command():
+#     if request.headers['remote-auth'] == hashlib.md5(app.config['SIMPLELOGIN_USERNAME'] +
+#                                                      ":" +
+#                                                      app.config['SIMPLELOGIN_PASSWORD'].encode('utf-8')).hexdigest():
+#         try:
+#             data = request.json
+#             key = data.get('key')
+#             print(f"Received command: {key}")
+#             if key == 'Right':
+#                 left_speed, right_speed = nes.wpm_controller(str(key).lower())
+#                 time.sleep(1)
+#                 motors.drive_stop()
 #
-#     # Add your logic here to handle the key command
-#     return jsonify({"status": "success"}), 200
+#             # Add your logic here to handle the key command
+#             return jsonify({"status": "success"}), 200
+#         except:
+#             return jsonify({"status": "failed"}), 500
 
 
 """
 SocketIO stuff for remote control
 """
 
-
-@socketio.on('keypress')
-@login_required
-def handle_keypress(data):
-    key = data['key']
-    # Send key to robot control logic
-    print(f"Key pressed: {key}")
-
-
-@socketio.on('keyup')
-@login_required
-def handle_keyup(data):
-    key = data['key']
-    # Send key release to robot control logic
-    print(f"Key released: {key}")
-
-
-@app.route('/remote_control')
-@login_required
-def remote_control():
-    # try:
-    #     # disable remote control
-    #     disable_robot_code()
-    # except:
-    #     print("nothing to kill")
-    # try:
-    #     from robot_code import motor_driver
-    #     # globals are bad so make this better
-    #     global md
-    #     md = motor_driver.Motor()
-    # except:
-    #     print("cannot connect to motor driver")
-
-    return render_template('remote_control.html')
+# @app.route('/remote_control')
+# @login_required
+# def robot_control():
+#
+#         try:
+#             # disable remote control
+#             disable_robot_code()
+#         except:
+#             print("nothing to kill")
+#
+#         try:
+#             from robot_code import motor_driver
+#             # globals are bad so make this better
+#             global md
+#             md = motor_driver.Motor()
+#         except:
+#             print("cannot connect to motor driver")
+#
+#     return render_template('remote_control.html')
 
 
 if __name__ == '__main__':
