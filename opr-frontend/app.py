@@ -310,6 +310,7 @@ SocketIO stuff for remote control
 
 @socketio.on('message')
 def handle_message(direction):
+    global client_socket
     # Send direction commands to drive controller
     client_socket.sendall(direction.encode('utf-8'))
     response = client_socket.recv(1024)
