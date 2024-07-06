@@ -151,7 +151,7 @@ def deploy_markers():
 @login_required
 def view_markers():
     global robot_code_process
-    print(robot_code_process)
+    print(robot_code_process.pid)
 
     # read markers file
     with open('markers.json', 'r') as f:
