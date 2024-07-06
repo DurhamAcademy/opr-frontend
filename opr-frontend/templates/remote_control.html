@@ -139,8 +139,7 @@
 
             function sendMessage(direction) {
                 //const message = document.getElementById('messageInput').value;
-                socket.send('message', direction);
-                //socket.emit('message', message);
+                socket.send(direction);
             }
 
         });

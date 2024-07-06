@@ -27,12 +27,14 @@ socketio = SocketIO(app,
                     cors_allowed_origins='*')
 
 # Connect to drive controller
-drive_host = 'localhost'
-drive_port = 55001
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-    client_socket.connect((drive_host, drive_port))
-    print(f"Connected to drive controller at {drive_host}:{drive_port}")
-
+try:
+    drive_host = 'localhost'
+    drive_port = 55001
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+        client_socket.connect((drive_host, drive_port))
+        print(f"Connected to drive controller at {drive_host}:{drive_port}")
+except:
+    print("not connected to drive controller")
 
 # Try to get secret from .env else set default.
 try:
