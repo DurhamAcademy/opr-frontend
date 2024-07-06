@@ -280,7 +280,9 @@ def disable_robot_code():
 @app.route('/remote_control')
 @login_required
 def remote_control():
+    disable_robot_code()
     return render_template('remote_control.html', methods=['GET'])
+
 
 """
 SocketIO stuff for remote control
@@ -290,7 +292,7 @@ SocketIO stuff for remote control
 @socketio.on('message')
 def handle_message(direction):
     #if is_logged_in():
-        # What to do to stop
+    # What to do to stop
     if direction == 'stop':
         print('Stop!')
         try:
