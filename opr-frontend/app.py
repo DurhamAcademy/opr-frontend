@@ -278,12 +278,13 @@ def enable_robot_code():
 @login_required
 def disable_robot_code():
     global robot_code_process
-    try:
-        if robot_code_process.terminate():
-            robot_code_process = robot_code_process.pid
-    except:
-        print("Unable to stop robot_code")
+    # try:
+    #     if robot_code_process.terminate():
+    #         robot_code_process = robot_code_process.pid
+    # except:
+    #     print("Unable to stop robot_code")
 
+    s = subprocess.check_output(['sudo', 'kill', robot_code_process.pid])
     p = subprocess.check_output(['sudo', 'pgrep', '-f', 'main.py'])
     for i in p.split():
         time.sleep(.1)
