@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>WebSocket Example</title>
+    <title>Remote Control OPR</title>
     <style>
         * {
             margin: 0;
@@ -19,8 +19,9 @@
         /* Make the video element fill the viewport */
         #videoElement {
             width: 100vw; /* 100% of the viewport width */
-            height: 100vh; /* 100% of the viewport height */
+            height: auto; /* 100% of the viewport height */
             object-fit: cover; /* Ensure the video covers the area */
+            aspect-ratio: 16 / 9;
         }
 
         #homeicon {
