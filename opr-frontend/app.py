@@ -288,10 +288,10 @@ SocketIO stuff for remote control
 
 
 @socketio.on('message')
-def handle_message(dir):
+def handle_message(direction):
     if is_logged_in():
         # What to do to stop
-        if dir == 'stop':
+        if direction == 'stop':
             print('Stop!')
             try:
                 motor_control.set_right_speed(0)
@@ -299,7 +299,7 @@ def handle_message(dir):
             except:
                 print("Unable to stop motor")
         # What to do when moving forward.
-        if dir == 'forward':
+        if direction == 'forward':
             print('Forward!')
             try:
                 motor_control.set_right_speed(-motor_control.drive_speed)
@@ -307,7 +307,7 @@ def handle_message(dir):
             except:
                 print("Unable to drive forward")
         # reverse
-        if dir == 'reverse':
+        if direction == 'reverse':
             print('Reverse!')
             try:
                 motor_control.set_right_speed(motor_control.drive_speed)
@@ -315,7 +315,7 @@ def handle_message(dir):
             except:
                 print("Unable to drive reverse")
         # Left
-        if dir == 'left':
+        if direction == 'left':
             print('Left!')
             try:
                 motor_control.set_right_speed(motor_control.drive_speed_turning)
@@ -323,7 +323,7 @@ def handle_message(dir):
             except:
                 print("Unable to drive left")
         # and right
-        if dir == 'right':
+        if direction == 'right':
             print('Right!')
             try:
                 motor_control.set_right_speed(-motor_control.drive_speed_turning)
@@ -331,7 +331,7 @@ def handle_message(dir):
             except:
                 print("Unable to drive right")
 
-        send(f'Echo: {dir}')
+        send(f'Echo: {direction}')
     else:
         send('Unautorized')
         return
