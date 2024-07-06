@@ -284,7 +284,7 @@ def disable_robot_code():
     # except:
     #     print("Unable to stop robot_code")
 
-    s = subprocess.check_output(['sudo', 'kill', robot_code_process.pid])
+    s = subprocess.check_output(['sudo', 'kill', '-9', str(robot_code_process.pid)])
     p = subprocess.check_output(['sudo', 'pgrep', '-f', 'main.py'])
     for i in p.split():
         time.sleep(.1)
