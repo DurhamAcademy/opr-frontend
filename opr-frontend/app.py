@@ -151,6 +151,7 @@ def deploy_markers():
 @login_required
 def view_markers():
     global robot_code_process
+    print(robot_code_process)
 
     # read markers file
     with open('markers.json', 'r') as f:
@@ -274,6 +275,7 @@ def disable_robot_code():
             robot_code_process = 0
     except:
         print("Unable to stop robot_code")
+
     return redirect(url_for('view_markers'))
 
 
