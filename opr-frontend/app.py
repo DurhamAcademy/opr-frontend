@@ -307,7 +307,7 @@ SocketIO stuff for remote control
 
 @socketio.on('message')
 def handle_message(direction):
-    drive.send(direction)
+    drive.send_command(direction)
 
 
 if __name__ == '__main__':
