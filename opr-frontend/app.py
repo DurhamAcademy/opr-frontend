@@ -284,11 +284,11 @@ def disable_robot_code():
     # except:
     #     print("Unable to stop robot_code")
 
-    p = subprocess.check_output(['pgrep', '-f', 'main.py'])
+    p = subprocess.check_output(['sudo', 'pgrep', '-f', 'main.py'])
     for i in p.split():
         time.sleep(.1)
         d = int(i)
-        subprocess.check_output(['kill', '-9', str(d)])
+        subprocess.check_output(['sudo', 'kill', '-9', str(d)])
 
     return redirect(url_for('view_markers'))
 
