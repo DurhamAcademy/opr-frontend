@@ -43,7 +43,7 @@ def safety_light_timeout():
 
 def set_right_speed(speed: int):
     """
-    :param speed: Speed of right motor, negative for backwards (range unknown) TODO: Find out range
+    :param speed: Speed of right motor, negative for backwards (range unknown)
     :return: null
     """
 
@@ -59,7 +59,7 @@ def set_right_speed(speed: int):
 
 def set_left_speed(speed: int):
     """
-    :param speed: Speed of left motor, negative for backwards (range unknown) TODO: Find out range
+    :param speed: Speed of left motor, negative for backwards (range unknown)
     :return: null
     """
 
@@ -131,6 +131,7 @@ def main():
             with client_socket:
                 print(f"Connected by {addr}")
                 while True:
+                    safety_light_timeout()
                     data = client_socket.recv(buffer_size)
                     if not data:
                         break
