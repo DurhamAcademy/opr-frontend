@@ -289,52 +289,52 @@ SocketIO stuff for remote control
 
 @socketio.on('message')
 def handle_message(direction):
-    if is_logged_in():
+    #if is_logged_in():
         # What to do to stop
-        if direction == 'stop':
-            print('Stop!')
-            try:
-                motor_control.set_right_speed(0)
-                motor_control.set_left_speed(0)
-            except:
-                print("Unable to stop motor")
-        # What to do when moving forward.
-        if direction == 'forward':
-            print('Forward!')
-            try:
-                motor_control.set_right_speed(-motor_control.drive_speed)
-                motor_control.set_left_speed(-motor_control.drive_speed)
-            except:
-                print("Unable to drive forward")
-        # reverse
-        if direction == 'reverse':
-            print('Reverse!')
-            try:
-                motor_control.set_right_speed(motor_control.drive_speed)
-                motor_control.set_left_speed(motor_control.drive_speed)
-            except:
-                print("Unable to drive reverse")
-        # Left
-        if direction == 'left':
-            print('Left!')
-            try:
-                motor_control.set_right_speed(motor_control.drive_speed_turning)
-                motor_control.set_left_speed(-motor_control.drive_speed_turning)
-            except:
-                print("Unable to drive left")
-        # and right
-        if direction == 'right':
-            print('Right!')
-            try:
-                motor_control.set_right_speed(-motor_control.drive_speed_turning)
-                motor_control.set_left_speed(motor_control.drive_speed_turning)
-            except:
-                print("Unable to drive right")
+    if direction == 'stop':
+        print('Stop!')
+        try:
+            motor_control.set_right_speed(0)
+            motor_control.set_left_speed(0)
+        except:
+            print("Unable to stop motor")
+    # What to do when moving forward.
+    if direction == 'forward':
+        print('Forward!')
+        try:
+            motor_control.set_right_speed(-motor_control.drive_speed)
+            motor_control.set_left_speed(-motor_control.drive_speed)
+        except:
+            print("Unable to drive forward")
+    # reverse
+    if direction == 'reverse':
+        print('Reverse!')
+        try:
+            motor_control.set_right_speed(motor_control.drive_speed)
+            motor_control.set_left_speed(motor_control.drive_speed)
+        except:
+            print("Unable to drive reverse")
+    # Left
+    if direction == 'left':
+        print('Left!')
+        try:
+            motor_control.set_right_speed(motor_control.drive_speed_turning)
+            motor_control.set_left_speed(-motor_control.drive_speed_turning)
+        except:
+            print("Unable to drive left")
+    # and right
+    if direction == 'right':
+        print('Right!')
+        try:
+            motor_control.set_right_speed(-motor_control.drive_speed_turning)
+            motor_control.set_left_speed(motor_control.drive_speed_turning)
+        except:
+            print("Unable to drive right")
 
-        send(f'Echo: {direction}')
-    else:
-        send('Unautorized')
-        return
+    send(f'Echo: {direction}')
+    # else:
+    #     send('Unautorized')
+    #     return
 
 
 if __name__ == '__main__':
