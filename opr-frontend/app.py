@@ -279,10 +279,14 @@ def enable_robot_code():
 def disable_robot_code():
     global robot_code_process
     try:
-        if robot_code_process.kill():
+        if robot_code_process.terminate():
             robot_code_process = robot_code_process.pid
     except:
         print("Unable to stop robot_code")
+
+    p = subprocess.check_output(['pgrep', '-f', 'main.py'])
+    for i in p.split():
+        subprocess.check_output(['kill', '-9', str(i)])
 
     return redirect(url_for('view_markers'))
 
