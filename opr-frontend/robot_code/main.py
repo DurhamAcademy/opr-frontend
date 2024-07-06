@@ -10,7 +10,7 @@ import config
 import threading
 import camera
 import charge_port
-import socket
+import drive_client
 
 # Import env file
 load_dotenv()
@@ -19,10 +19,8 @@ base_dir = os.getenv('OPR_BASE_DIR')
 
 # drive = motor_driver.Motor()
 ar = arduino.Arduino()
-
-# Connect to the drive controller over socket 55001
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-    client_socket.connect(("localhost", 55001))
+drive_controller = drive_client.SocketClient()
+drive_controller.connect()
 
 """
 Logging
@@ -53,8 +51,7 @@ def log(text, logonly=False):
 
 # Connect to motor driver socket and send drive commands there.
 def drive(command):
-    client_socket.sendall(command.encode('utf-8'))
-    response = client_socket.recv(1024)
+    response = drive_controller.send_command(command)
     print(response)
     # log(f"Response from server: {response.decode('utf-8')}", logonly=True)
 
