@@ -27,9 +27,9 @@ except ImportError as e:
     print(e)
 
 app = Flask(__name__,
-            template_folder='templates',
-            cors_allowed_origins="*")
-socketio = SocketIO(app)
+            template_folder='templates')
+socketio = SocketIO(app,
+                    cors_allowed_origins='*')
 
 
 # Try to get secret from .env else set default.
