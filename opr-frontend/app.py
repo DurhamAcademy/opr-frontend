@@ -277,8 +277,9 @@ def disable_robot_code():
 
 
 @app.route('/remote_control')
-def index():
-    return render_template('remote_control.html')
+@login_required
+def remote_control():
+    return render_template('remote_control.html', methods=['GET'])
 
 """
 SocketIO stuff for remote control
