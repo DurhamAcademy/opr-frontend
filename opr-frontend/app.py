@@ -279,8 +279,8 @@ def enable_robot_code():
 def disable_robot_code():
     global robot_code_process
     try:
-        if robot_code_process.terminate():
-            robot_code_process = 0
+        if robot_code_process.kill():
+            robot_code_process = robot_code_process.pid
     except:
         print("Unable to stop robot_code")
 
