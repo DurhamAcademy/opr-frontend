@@ -305,14 +305,14 @@ SocketIO stuff for remote control
 """
 
 
-@socketio.on('message')
-def handle_message(direction):
-    drive.send_command(direction)
+# @socketio.on('message')
+# def handle_message(direction):
+#     drive.send_command(direction)
 
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    socketio.run(app,
-                 host='0.0.0.0',
-                 port=5000,
-                 allow_unsafe_werkzeug=True)
+    app.run(debug=True)
+    #socketio.run(app,
+                 # host='0.0.0.0',
+                 # port=5000,
+                 # allow_unsafe_werkzeug=True)
