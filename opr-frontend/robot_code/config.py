@@ -12,7 +12,7 @@ safety_light_pin = 22
 # pin for charger plug sensor.
 charge_plug_sensor = 16
 # how long after the last movement before we turn the light off?
-safety_light_timeout = 20
+safety_light_timeout = 10
 # camera enable IO pin - Alarm1 input on camera
 camera_io_alarm_pin = 6
 # what pin is the physical switch that enters gps/controller mode on?
