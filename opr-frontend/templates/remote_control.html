@@ -57,14 +57,6 @@
                 console.log('Received update:', data);
             });
 
-            // Function to start performing an action while the button is pressed
-            function startAction() {
-                intervalId = setInterval(() => {
-                    console.log('Button is pressed');
-                    sendMessage(); // Call sendMessage or any other function you want to perform repeatedly
-                }, 100); // Perform the action every 1 second (1000 ms)
-            }
-
             function moveForward() {
                 intervalId = setInterval(() => {
                     console.log('Forward button is pressed');

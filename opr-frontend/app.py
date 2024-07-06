@@ -19,18 +19,19 @@ from flask_socketio import SocketIO, send, emit
 import subprocess
 import hashlib
 import psutil
-
-try:
-    import motor_control
-except ImportError as e:
-    print("Motor control is not installed, is this a Pi with GPIO?")
-    print("Import error was: ")
-    print(e)
+import socket
 
 app = Flask(__name__,
             template_folder='templates')
 socketio = SocketIO(app,
                     cors_allowed_origins='*')
+
+# Connect to drive controller
+drive_host = 'localhost'
+drive_port = 55001
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+    client_socket.connect((drive_host, drive_port))
+    print(f"Connected to drive controller at {drive_host}:{drive_port}")
 
 
 # Try to get secret from .env else set default.
@@ -308,52 +309,10 @@ SocketIO stuff for remote control
 
 @socketio.on('message')
 def handle_message(direction):
-    #if is_logged_in():
-    # What to do to stop
-    if direction == 'stop':
-        print('Stop!')
-        try:
-            motor_control.set_right_speed(0)
-            motor_control.set_left_speed(0)
-        except:
-            print("Unable to stop motor")
-    # What to do when moving forward.
-    if direction == 'forward':
-        print('Forward!')
-        try:
-            motor_control.set_right_speed(-motor_control.drive_speed)
-            motor_control.set_left_speed(-motor_control.drive_speed)
-        except:
-            print("Unable to drive forward")
-    # reverse
-    if direction == 'reverse':
-        print('Reverse!')
-        try:
-            motor_control.set_right_speed(motor_control.drive_speed)
-            motor_control.set_left_speed(motor_control.drive_speed)
-        except:
-            print("Unable to drive reverse")
-    # Left
-    if direction == 'left':
-        print('Left!')
-        try:
-            motor_control.set_right_speed(motor_control.drive_speed_turning)
-            motor_control.set_left_speed(-motor_control.drive_speed_turning)
-        except:
-            print("Unable to drive left")
-    # and right
-    if direction == 'right':
-        print('Right!')
-        try:
-            motor_control.set_right_speed(-motor_control.drive_speed_turning)
-            motor_control.set_left_speed(motor_control.drive_speed_turning)
-        except:
-            print("Unable to drive right")
-
-    send(f'Echo: {direction}')
-    # else:
-    #     send('Unautorized')
-    #     return
+    # Send direction commands to drive controller
+    client_socket.sendall(direction.encode('utf-8'))
+    response = client_socket.recv(1024)
+    print(f"Response from server: {response.decode('utf-8')}")
 
 
 if __name__ == '__main__':

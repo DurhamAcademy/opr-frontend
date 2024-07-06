@@ -109,13 +109,6 @@ def drive_reverse():
     return
 
 
-def cleanup():
-    # Clean up everything
-    right_motor.stop()
-    left_motor.stop()
-    GPIO.output(config.safety_light_pin, GPIO.LOW)
-
-
 def main():
     host = 'localhost'
     port = 55001

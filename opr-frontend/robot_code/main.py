@@ -1,4 +1,3 @@
-import motor_driver
 import gps
 import arduino
 from dotenv import load_dotenv
@@ -11,14 +10,19 @@ import config
 import threading
 import camera
 import charge_port
+import socket
 
 # Import env file
 load_dotenv()
 load_dotenv(dotenv_path='../.env')
 base_dir = os.getenv('OPR_BASE_DIR')
 
-drive = motor_driver.Motor()
+# drive = motor_driver.Motor()
 ar = arduino.Arduino()
+
+# Connect to the drive controller over socket 55001
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
+    client_socket.connect(("localhost", 55001))
 
 """
 Logging
@@ -45,6 +49,14 @@ def log(text, logonly=False):
             f.write(str(text))
         f.close()
     print(text)
+
+
+# Connect to motor driver socket and send drive commands there.
+def drive(command):
+    client_socket.sendall(command.encode('utf-8'))
+    response = client_socket.recv(1024)
+    print(response)
+    # log(f"Response from server: {response.decode('utf-8')}", logonly=True)
 
 
 def num_to_range(num, inMin, inMax, outMin, outMax):
@@ -130,7 +142,7 @@ def rotate_to_heading(current_heading, target_heading):
             dest_compass = (current_compass - rotation_dir[1]) % 360
             # speed = num_to_range(rotation_dir[1], 0, 360, 30, 50)
             while not within_range_degrees(current_compass, dest_compass):
-                drive.drive_turn_left(config.drive_speed_turning)
+                drive("left")
                 current_compass = (gps.get_heading()) % 360
                 #print("current: ", current_compass)
         else:
@@ -139,43 +151,43 @@ def rotate_to_heading(current_heading, target_heading):
             log("Turning right for course correction", logonly=True)
             # speed = num_to_range(rotation_dir[1], 0, 360, 30, 50)
             while not within_range_degrees(current_compass, dest_compass):
-                drive.drive_turn_right(config.drive_speed_turning)
+                drive("right")
                 current_compass = (gps.get_heading()) % 360
                 #print("current: ", current_compass)
         # Stop the rotation and return.
-        drive.drive_stop()
+        drive("stop")
     else:
         print("rotation not needed.")
 
-
-def simple_check(ultra):
-    print(ultra)
-    directions = [1, -1]  # 1 is right, -1 is left
-    turn_dir = directions[ultra.index(max(ultra[:2]))]  # pick left direction if left ultra is greater, vice versa
-    forward_time = 2
-    orig_angle = gps.get_heading()
-    for i in range(2):
-        for j in range(2):
-            # check two times if you can get around obstacle
-            if turn_dir == 1:
-                rotate_to_heading(orig_angle, orig_angle + 70)  # turn in chosen direction
-            else:
-                rotate_to_heading(orig_angle, orig_angle - 70)  # turn in chosen direction
-            drive.drive_forward()
-            time.sleep(forward_time)
-            angle = gps.get_heading()
-            print("back", orig_angle)
-            rotate_to_heading(angle, orig_angle)  # turn back to check ultras
-            check = ar.get_ultrasonic()
-            print(check[:2])
-            if min(check[:2]) > config.ultra_alert_distance or min(check[:2]) == 0:
-                return True  # check ultrasonics, return true if they are clear
-        turn_dir *= -1  # try the other direction, currently are facing towards obstacle
-        angle = gps.get_heading()
-        rotate_to_heading(angle, orig_angle + (90 * turn_dir))  # turn in new chosen direction in order to move back
-        drive.drive_forward()
-        time.sleep(forward_time * 2)  # drive back to where you started and repeat loop
-    return False  # return false if you can't get unstuck, give up
+#
+# def simple_check(ultra):
+#     print(ultra)
+#     directions = [1, -1]  # 1 is right, -1 is left
+#     turn_dir = directions[ultra.index(max(ultra[:2]))]  # pick left direction if left ultra is greater, vice versa
+#     forward_time = 2
+#     orig_angle = gps.get_heading()
+#     for i in range(2):
+#         for j in range(2):
+#             # check two times if you can get around obstacle
+#             if turn_dir == 1:
+#                 rotate_to_heading(orig_angle, orig_angle + 70)  # turn in chosen direction
+#             else:
+#                 rotate_to_heading(orig_angle, orig_angle - 70)  # turn in chosen direction
+#             drive("forward")
+#             time.sleep(forward_time)
+#             angle = gps.get_heading()
+#             print("back", orig_angle)
+#             rotate_to_heading(angle, orig_angle)  # turn back to check ultras
+#             check = ar.get_ultrasonic()
+#             print(check[:2])
+#             if min(check[:2]) > config.ultra_alert_distance or min(check[:2]) == 0:
+#                 return True  # check ultrasonics, return true if they are clear
+#         turn_dir *= -1  # try the other direction, currently are facing towards obstacle
+#         angle = gps.get_heading()
+#         rotate_to_heading(angle, orig_angle + (90 * turn_dir))  # turn in new chosen direction in order to move back
+#         drive("forward")
+#         time.sleep(forward_time * 2)  # drive back to where you started and repeat loop
+#     return False  # return false if you can't get unstuck, give up
 
 
 def go_to_position(target_pos: tuple):
@@ -193,15 +205,15 @@ def go_to_position(target_pos: tuple):
         time_count = 0
         while time_count <= config.gps_heading_check_interval:
             if not check_obstacle():
-                drive.drive_forward()
+                drive("forward")
             else:
                 log("Obstacle detected.")
-                drive.drive_stop()
+                drive("stop")
 
             time.sleep(.5)
             time_count += .5
 
-    drive.drive_stop()
+    drive("stop")
 
 
 def check_obstacle():
@@ -231,27 +243,27 @@ def check_stuck():
     return False
 
 
-def reroute(trigger, distance):
-    """
-    Complex ultrasonic reroutes, unfinished
-    """
-    closer = "right"  # pos will make it turn right, neg will make it turn left
-    if trigger[0] < trigger[1]:
-        closer = "left"
-    # reverse for distance
-    if closer == "left":
-        drive.set_left_speed(-30)
-        drive.set_right_speed(-40)
-    else:
-        drive.set_left_speed(-40)
-        drive.set_right_speed(-30)
-    checkUltra = ar.get_ultrasonic()
-    if checkUltra[:2] == 0:
-        drive.drive_forward()
-    elif checkUltra[1:] == 0:
-        drive.drive_reverse()
-    else:
-        print("is there an else here")
+# def reroute(trigger, distance):
+#     """
+#     Complex ultrasonic reroutes, unfinished
+#     """
+#     closer = "right"  # pos will make it turn right, neg will make it turn left
+#     if trigger[0] < trigger[1]:
+#         closer = "left"
+#     # reverse for distance
+#     if closer == "left":
+#         drive.set_left_speed(-30)
+#         drive.set_right_speed(-40)
+#     else:
+#         drive.set_left_speed(-40)
+#         drive.set_right_speed(-30)
+#     checkUltra = ar.get_ultrasonic()
+#     if checkUltra[:2] == 0:
+#         drive.drive_forward()
+#     elif checkUltra[1:] == 0:
+#         drive.drive_reverse()
+#     else:
+#         print("is there an else here")
 
 
 def check_perimeter():
@@ -376,12 +388,6 @@ def main():
     try:
         while True:
             """
-            Check safety light timeout
-            TODO: Enable mutilthreading and move this into its own thread.
-            """
-            drive.safety_light_timeout()
-
-            """
             Check Humidity and Temperature Level
             """
 
@@ -480,7 +486,7 @@ def main():
     finally:
         log("Main loop complete.")
         camera.disable_camera()
-        drive.cleanup()
+        drive("stop")
 
 
 if __name__ == "__main__":
