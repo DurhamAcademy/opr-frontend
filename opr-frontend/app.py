@@ -298,7 +298,6 @@ def disable_robot_code():
 @app.route('/remote_control')
 @login_required
 def remote_control():
-    disable_robot_code()
     return render_template('remote_control.html', methods=['GET'])
 
 
