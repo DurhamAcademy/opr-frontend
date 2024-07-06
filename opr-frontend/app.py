@@ -19,7 +19,7 @@ from flask_socketio import SocketIO, send, emit
 import subprocess
 import hashlib
 import psutil
-import socket
+from robot_code import drive_client
 
 app = Flask(__name__,
             template_folder='templates')
@@ -28,11 +28,8 @@ socketio = SocketIO(app,
 
 # Connect to drive controller
 try:
-    drive_host = 'localhost'
-    drive_port = 55001
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-        client_socket.connect((drive_host, drive_port))
-        print(f"Connected to drive controller at {drive_host}:{drive_port}")
+    drive = drive_client.SocketClient()
+    drive.connect()
 except:
     print("not connected to drive controller")
 
@@ -310,11 +307,7 @@ SocketIO stuff for remote control
 
 @socketio.on('message')
 def handle_message(direction):
-    global client_socket
-    # Send direction commands to drive controller
-    client_socket.sendall(direction.encode('utf-8'))
-    response = client_socket.recv(1024)
-    print(f"Response from drive controller server: {response.decode('utf-8')}")
+    drive.send(direction)
 
 
 if __name__ == '__main__':

@@ -129,8 +129,7 @@ def main():
                     if not data:
                         break
                     command = data.decode('utf-8')
-                    print(f"Received command: {command}")
-                    # Here you can execute the command or handle it as needed
+                    # print(f"Received command: {command}")
                     if command == 'stop':
                         drive_stop()
                     elif command == 'forward':

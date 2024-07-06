@@ -52,7 +52,6 @@ def log(text, logonly=False):
 # Connect to motor driver socket and send drive commands there.
 def drive(command):
     response = drive_controller.send_command(command)
-    print(response)
     # log(f"Response from server: {response.decode('utf-8')}", logonly=True)
 
 
