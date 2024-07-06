@@ -18,6 +18,7 @@ import datetime
 from flask_socketio import SocketIO, send, emit
 import subprocess
 import hashlib
+import psutil
 
 try:
     import motor_control
@@ -50,6 +51,14 @@ SimpleLogin(app)
 # Globals
 # Start Robot Code by Default
 robot_code_process = subprocess.Popen(["sudo", "python", "robot_code/main.py"])
+
+
+# Check running processes.
+def process_status(process_id):
+    for process in psutil.process_iter(['pid', 'name']):
+        if process.pid == process_id:
+            return True
+    return False
 
 
 @app.route('/favicon.ico')
@@ -151,7 +160,6 @@ def deploy_markers():
 @login_required
 def view_markers():
     global robot_code_process
-    print(robot_code_process.pid)
 
     # read markers file
     with open('markers.json', 'r') as f:
@@ -196,7 +204,7 @@ def view_markers():
 
     # check for running code
     try:
-        if robot_code_process:
+        if process_status(robot_code_process.pid):
             robot_code = robot_code_process.pid
         else:
             robot_code = 0
