@@ -311,7 +311,7 @@ def handle_message(direction):
     # Send direction commands to drive controller
     client_socket.sendall(direction.encode('utf-8'))
     response = client_socket.recv(1024)
-    print(f"Response from server: {response.decode('utf-8')}")
+    print(f"Response from drive controller server: {response.decode('utf-8')}")
 
 
 if __name__ == '__main__':
