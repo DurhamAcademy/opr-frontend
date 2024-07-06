@@ -118,7 +118,7 @@ def cleanup():
 
 def main():
     host = 'localhost'
-    port = 12345
+    port = 55001
     buffer_size = 1024
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
@@ -137,6 +137,17 @@ def main():
                     command = data.decode('utf-8')
                     print(f"Received command: {command}")
                     # Here you can execute the command or handle it as needed
+                    if command == 'stop':
+                        drive_stop()
+                    elif command == 'forward':
+                        drive_forward()
+                    elif command == 'reverse':
+                        drive_reverse()
+                    elif command == 'right':
+                        drive_turn_right(config.drive_speed_turning)
+                    elif command == 'left':
+                        drive_turn_left(config.drive_speed_turning)
+
                     response = f"Command '{command}' received"
                     client_socket.sendall(response.encode('utf-8'))
 
