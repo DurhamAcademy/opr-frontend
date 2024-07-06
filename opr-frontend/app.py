@@ -27,7 +27,8 @@ except ImportError as e:
     print(e)
 
 app = Flask(__name__,
-            template_folder='templates',)
+            template_folder='templates',
+            cors_allowed_origins="*")
 socketio = SocketIO(app)
 
 
