@@ -52,7 +52,6 @@ def set_right_speed(speed: int):
     """
     global last_motor_command
     last_motor_command = time.time()
-    safety_light_timeout()
 
     if speed >= 0:
         GPIO.output(config.motor_right_direction_pin, GPIO.HIGH)
@@ -68,7 +67,6 @@ def set_left_speed(speed: int):
     """
     global last_motor_command
     last_motor_command = time.time()
-    safety_light_timeout()
 
     if speed >= 0:
         GPIO.output(config.motor_left_direction_pin, GPIO.HIGH)
@@ -156,7 +154,6 @@ def main():
         print(f"Server listening on {host}:{port}")
 
         while True:
-            safety_light_timeout()
             client_socket, addr = server_socket.accept()
             client_handler = threading.Thread(target=handle_client, args=(client_socket, addr))
             client_handler.start()
