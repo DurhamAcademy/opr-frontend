@@ -9,7 +9,6 @@ try:
     previous_input = "neutral"
     while True:
         button_input = controller.snes_input()
-        #print("button input : " + button_input)
 
         while button_input != previous_input:
             if button_input == "up":
@@ -23,6 +22,10 @@ try:
 
             # Check button change
             button_input = controller.snes_input()
+
+        # Stop motors once if we go to neutral
+        if button_input == "neutral" and previous_input != "neutral":
+            drive.send_command("stop")
 
         previous_input = button_input
 except:
