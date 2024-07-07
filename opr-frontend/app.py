@@ -50,7 +50,7 @@ SimpleLogin(app)
 
 # Globals
 # Start Robot Code by Default
-robot_code_process = subprocess.Popen(["sudo", "python", "robot_code/main.py"])
+robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
 
 
 # Check running processes.
