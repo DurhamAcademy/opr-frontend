@@ -125,24 +125,27 @@ def main():
                 print(f"Connected by {addr}")
                 while True:
                     safety_light_timeout()
-                    data = client_socket.recv(buffer_size)
-                    if not data:
-                        break
-                    command = data.decode('utf-8')
-                    # print(f"Received command: {command}")
-                    if command == 'stop':
-                        drive_stop()
-                    elif command == 'forward':
-                        drive_forward()
-                    elif command == 'reverse':
-                        drive_reverse()
-                    elif command == 'right':
-                        drive_turn_right(config.drive_speed_turning)
-                    elif command == 'left':
-                        drive_turn_left(config.drive_speed_turning)
+                    try:
+                        data = client_socket.recv(buffer_size)
+                        if not data:
+                            break
+                        command = data.decode('utf-8')
+                        # print(f"Received command: {command}")
+                        if command == 'stop':
+                            drive_stop()
+                        elif command == 'forward':
+                            drive_forward()
+                        elif command == 'reverse':
+                            drive_reverse()
+                        elif command == 'right':
+                            drive_turn_right(config.drive_speed_turning)
+                        elif command == 'left':
+                            drive_turn_left(config.drive_speed_turning)
 
-                    response = f"Command '{command}' received"
-                    client_socket.sendall(response.encode('utf-8'))
+                        response = f"Command '{command}' received"
+                        client_socket.sendall(response.encode('utf-8'))
+                    except Exception as e:
+                        print(e)
 
 
 if __name__ == "__main__":
