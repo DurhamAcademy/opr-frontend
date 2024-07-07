@@ -37,14 +37,7 @@
     <link rel="stylesheet" href="/static/css/dpad.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
-     <script>
-        document.getElementById('sendUpButton').addEventListener('click', () => {
-            fetch('/move_robot?direction=forward')
-                .catch(error => {
-                    console.error('Error fetching the URL:', error);
-                });
-        });
-    </script>
+
 </head>
 <body>
 
@@ -79,7 +72,14 @@
 
     </div>
 
-
+    <script>
+        document.getElementById('sendUpButton').addEventListener('click', () => {
+            fetch('/move_robot?direction=forward')
+                .catch(error => {
+                    console.error('Error fetching the URL:', error);
+                });
+        });
+    </script>
 
 
 </body>
