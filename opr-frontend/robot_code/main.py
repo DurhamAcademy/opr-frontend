@@ -49,11 +49,6 @@ def log(text, logonly=False):
     print(text)
 
 
-# Connect to motor driver socket and send drive commands there.
-def drive(command):
-    drive_controller.send_command(command)
-
-
 def num_to_range(num, inMin, inMax, outMin, outMax):
     """
     Map values from one range to the next.
@@ -137,7 +132,7 @@ def rotate_to_heading(current_heading, target_heading):
             dest_compass = (current_compass - rotation_dir[1]) % 360
             # speed = num_to_range(rotation_dir[1], 0, 360, 30, 50)
             while not within_range_degrees(current_compass, dest_compass):
-                drive("left")
+                drive_controller.send_command("left")
                 current_compass = (gps.get_heading()) % 360
                 #print("current: ", current_compass)
         else:
@@ -146,11 +141,11 @@ def rotate_to_heading(current_heading, target_heading):
             log("Turning right for course correction", logonly=True)
             # speed = num_to_range(rotation_dir[1], 0, 360, 30, 50)
             while not within_range_degrees(current_compass, dest_compass):
-                drive("right")
+                drive_controller.send_command("right")
                 current_compass = (gps.get_heading()) % 360
                 #print("current: ", current_compass)
         # Stop the rotation and return.
-        drive("stop")
+        drive_controller.send_command("stop")
     else:
         print("rotation not needed.")
 
@@ -208,7 +203,7 @@ def go_to_position(target_pos: tuple):
             time.sleep(.5)
             time_count += .5
 
-    drive("stop")
+    drive_controller.send_command("stop")
 
 
 def check_obstacle():
@@ -481,7 +476,7 @@ def main():
     finally:
         log("Main loop complete.")
         camera.disable_camera()
-        drive("stop")
+        drive_controller.send_command("stop")
 
 
 if __name__ == "__main__":
