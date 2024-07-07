@@ -1,5 +1,4 @@
 import hid
-import RPi.GPIO as GPIO
 import config
 
 
@@ -14,36 +13,16 @@ class Nes(object):
         except AttributeError:
             print("Unable to open device")
 
-        try:
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(config.gps_mode_switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        except:
-            print("Unable to setup GPIO on NES/GPS Switch")
-
-    def get_mode(self):
-        """
-        Check GPS mode or Controller Mode based on physical switch.
-        """
-        mode = GPIO.input(config.gps_mode_switch_pin)
-        if mode == 1:
-            return "gps"
-        else:
-            return "controller"
-
     def snes_input(self):
         report = self.nes_device.read(64)
         if report:
             if report[4] == 0 and report[9] == 255:
-                self.gps_mode = False
                 return ("up")
             elif report[4] == 255 and report[10] == 255:
-                self.gps_mode = False
                 return ("down")
             elif report[3] == 0 and report[8] == 255:
-                self.gps_mode = False
                 return ("left")
             elif report[3] == 255 and report[7] == 255:
-                self.gps_mode = False
                 return ("right")
             elif report[1] == 1:
                 return ("select")
