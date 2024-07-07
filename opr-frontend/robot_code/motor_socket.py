@@ -108,7 +108,6 @@ def drive_reverse():
 def handle_client(client_socket, addr):
     print(f"Connected by {addr}")
     while True:
-        safety_light_timeout()
         try:
             data = client_socket.recv(1024)
             if not data:
@@ -151,6 +150,7 @@ def main():
         print(f"Server listening on {host}:{port}")
 
         while True:
+            safety_light_timeout()
             client_socket, addr = server_socket.accept()
             client_handler = threading.Thread(target=handle_client, args=(client_socket, addr))
             client_handler.start()
