@@ -42,7 +42,7 @@ def safety_light_timeout():
         else:
             GPIO.output(config.safety_light_pin, GPIO.HIGH)
             print("turn light on")
-    time.sleep(1)
+        time.sleep(1)
 
 
 def set_right_speed(speed: int):
