@@ -34,9 +34,7 @@ GPIO.output(config.safety_light_pin, GPIO.LOW)
 
 def safety_light_timeout():
     if last_motor_command + config.safety_light_timeout < time.time():
-        # if pin is high, go low
-        if GPIO.input(config.safety_light_pin):
-            GPIO.output(config.safety_light_pin, GPIO.LOW)
+        GPIO.output(config.safety_light_pin, GPIO.LOW)
     else:
         GPIO.output(config.safety_light_pin, GPIO.HIGH)
 
@@ -89,16 +87,15 @@ def drive_forward():
 def drive_turn_right(speed):
     last_motor_command = time.time()
     # set_left_speed(0)
-    set_right_speed(-1 * speed)
-    set_left_speed(speed)
+    set_right_speed(speed)
+    set_left_speed(-1 * speed)
     return
 
 
 def drive_turn_left(speed):
     last_motor_command = time.time()
-    set_right_speed(speed)
-    # set_right_speed(0)
-    set_left_speed(-1 * speed)
+    set_right_speed(-1 * speed)
+    set_left_speed(speed)
     return
 
 
