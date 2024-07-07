@@ -33,14 +33,16 @@ GPIO.output(config.safety_light_pin, GPIO.LOW)
 
 
 def safety_light_timeout():
-    global last_motor_command
-    if last_motor_command + config.safety_light_timeout < time.time():
-        # turn light off when exceed timeout.
-        GPIO.output(config.safety_light_pin, GPIO.LOW)
-        print("turn light off")
-    else:
-        GPIO.output(config.safety_light_pin, GPIO.HIGH)
-        print("turn light on")
+    while True:
+        global last_motor_command
+        if last_motor_command + config.safety_light_timeout < time.time():
+            # turn light off when exceed timeout.
+            GPIO.output(config.safety_light_pin, GPIO.LOW)
+            print("turn light off")
+        else:
+            GPIO.output(config.safety_light_pin, GPIO.HIGH)
+            print("turn light on")
+    time.sleep(1)
 
 
 def set_right_speed(speed: int):
