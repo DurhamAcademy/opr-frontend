@@ -15,9 +15,9 @@ class SocketClient:
     def send_command(self, command):
         if self.client_socket:
             self.client_socket.sendall(command.encode('utf-8'))
-            response = self.client_socket.recv(1024)
-            return response.decode('utf-8')
-            #return
+            #response = self.client_socket.recv(1024)
+            #return response.decode('utf-8')
+            return "sent"
         else:
             return "Not connected to server"
 
