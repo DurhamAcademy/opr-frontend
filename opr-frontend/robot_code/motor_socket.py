@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import config
 import time
 import socket
-
+import threading
 
 """
 Using a class for motor control
@@ -109,10 +109,45 @@ def drive_reverse():
     return
 
 
+def handle_client(client_socket, addr):
+    print(f"Connected by {addr}")
+    while True:
+        try:
+            data = client_socket.recv(1024)
+            if not data:
+                break
+            command = data.decode('utf-8')
+            print(f"Received command from {addr}: {command}")
+            # Here you can execute the command or handle it as needed
+
+            safety_light_timeout()
+            try:
+                # print(f"Received command: {command}")
+                if command == 'stop':
+                    drive_stop()
+                elif command == 'forward':
+                    drive_forward()
+                elif command == 'reverse':
+                    drive_reverse()
+                elif command == 'right':
+                    drive_turn_right(config.drive_speed_turning)
+                elif command == 'left':
+                    drive_turn_left(config.drive_speed_turning)
+
+                response = f"Command '{command}' received"
+                client_socket.sendall(response.encode('utf-8'))
+            except Exception as e:
+                print(e)
+
+        except ConnectionResetError:
+            break
+    print(f"Connection with {addr} closed")
+    client_socket.close()
+
+
 def main():
     host = 'localhost'
     port = 55001
-    buffer_size = 1024
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((host, port))
@@ -121,31 +156,8 @@ def main():
 
         while True:
             client_socket, addr = server_socket.accept()
-            with client_socket:
-                print(f"Connected by {addr}")
-                while True:
-                    safety_light_timeout()
-                    try:
-                        data = client_socket.recv(buffer_size)
-                        if not data:
-                            break
-                        command = data.decode('utf-8')
-                        # print(f"Received command: {command}")
-                        if command == 'stop':
-                            drive_stop()
-                        elif command == 'forward':
-                            drive_forward()
-                        elif command == 'reverse':
-                            drive_reverse()
-                        elif command == 'right':
-                            drive_turn_right(config.drive_speed_turning)
-                        elif command == 'left':
-                            drive_turn_left(config.drive_speed_turning)
-
-                        response = f"Command '{command}' received"
-                        client_socket.sendall(response.encode('utf-8'))
-                    except Exception as e:
-                        print(e)
+            client_handler = threading.Thread(target=handle_client, args=(client_socket, addr))
+            client_handler.start()
 
 
 if __name__ == "__main__":
