@@ -106,6 +106,7 @@ def drive_reverse():
 def handle_client(client_socket, addr):
     print(f"Connected by {addr}")
     while True:
+        safety_light_timeout()
         try:
             data = client_socket.recv(1024)
             if not data:
@@ -114,7 +115,6 @@ def handle_client(client_socket, addr):
             print(f"Received command from {addr}: {command}")
             # Here you can execute the command or handle it as needed
 
-            safety_light_timeout()
             try:
                 # print(f"Received command: {command}")
                 if command == 'stop':
