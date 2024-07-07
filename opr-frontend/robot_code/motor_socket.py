@@ -33,7 +33,9 @@ GPIO.output(config.safety_light_pin, GPIO.LOW)
 
 
 def safety_light_timeout():
+    global last_motor_command
     if last_motor_command + config.safety_light_timeout < time.time():
+        # turn light off when exceed timeout.
         GPIO.output(config.safety_light_pin, GPIO.LOW)
     else:
         GPIO.output(config.safety_light_pin, GPIO.HIGH)
@@ -44,7 +46,7 @@ def set_right_speed(speed: int):
     :param speed: Speed of right motor, negative for backwards (range unknown)
     :return: null
     """
-
+    global last_motor_command
     last_motor_command = time.time()
     safety_light_timeout()
 
@@ -60,7 +62,7 @@ def set_left_speed(speed: int):
     :param speed: Speed of left motor, negative for backwards (range unknown)
     :return: null
     """
-
+    global last_motor_command
     last_motor_command = time.time()
     safety_light_timeout()
 
@@ -78,29 +80,24 @@ def drive_stop():
 
 
 def drive_forward():
-    last_motor_command = time.time()
     set_left_speed(-80)
     set_right_speed(-80)
     return
 
 
 def drive_turn_right(speed):
-    last_motor_command = time.time()
-    # set_left_speed(0)
     set_right_speed(speed)
     set_left_speed(-1 * speed)
     return
 
 
 def drive_turn_left(speed):
-    last_motor_command = time.time()
     set_right_speed(-1 * speed)
     set_left_speed(speed)
     return
 
 
 def drive_reverse():
-    last_motor_command = time.time()
     set_left_speed(30)
     set_right_speed(30)
     return
