@@ -38,10 +38,8 @@ def safety_light_timeout():
         if last_motor_command + config.safety_light_timeout < time.time():
             # turn light off when exceed timeout.
             GPIO.output(config.safety_light_pin, GPIO.LOW)
-            print("turn light off")
         else:
             GPIO.output(config.safety_light_pin, GPIO.HIGH)
-            print("turn light on")
         time.sleep(1)
 
 
