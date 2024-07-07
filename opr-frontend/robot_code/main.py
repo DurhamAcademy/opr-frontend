@@ -195,10 +195,10 @@ def go_to_position(target_pos: tuple):
         time_count = 0
         while time_count <= config.gps_heading_check_interval:
             if not check_obstacle():
-                drive("forward")
+                drive_controller.send_command("forward")
             else:
                 log("Obstacle detected.")
-                drive("stop")
+                drive_controller.send_command("stop")
 
             time.sleep(.5)
             time_count += .5
