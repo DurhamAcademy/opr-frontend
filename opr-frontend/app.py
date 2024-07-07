@@ -26,13 +26,6 @@ app = Flask(__name__,
 socketio = SocketIO(app,
                     cors_allowed_origins='*')
 
-# Connect to drive controller
-try:
-    drive = drive_client.SocketClient()
-    drive.connect()
-except:
-    print("not connected to drive controller")
-
 # Try to get secret from .env else set default.
 try:
     dotenv.load_dotenv(dotenv_path='.env')
@@ -51,6 +44,14 @@ SimpleLogin(app)
 # Globals
 # Start Robot Code by Default
 robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
+
+drive = None
+# Connect to drive controller
+try:
+    drive = drive_client.SocketClient()
+    drive.connect()
+except:
+    print("not connected to drive controller")
 
 
 # Check running processes.
@@ -284,13 +285,6 @@ def disable_robot_code():
     except:
         print("Unable to stop robot_code")
 
-    # s = subprocess.check_output(['sudo', 'kill', '-9', str(robot_code_process.pid)])
-    # p = subprocess.check_output(['sudo', 'pgrep', '-f', 'main.py'])
-    # for i in p.split():
-    #     time.sleep(.1)
-    #     d = int(i)
-    #     subprocess.check_output(['sudo', 'kill', '-9', str(d)])
-
     return redirect(url_for('view_markers'))
 
 
@@ -300,14 +294,13 @@ def remote_control():
     return render_template('remote_control.html', methods=['GET'])
 
 
-"""
-SocketIO stuff for remote control
-"""
-
-
-# @socketio.on('message')
-# def handle_message(direction):
-#     drive.send_command(direction)
+@app.route('/move_robot', methods=['GET'])
+@login_required
+def move_robot():
+    global drive
+    if request.args.get['direction'] == 'forward':
+        drive.send_command("forward")
+    return
 
 
 if __name__ == '__main__':

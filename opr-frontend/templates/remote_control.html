@@ -37,115 +37,13 @@
     <link rel="stylesheet" href="/static/css/dpad.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
-    <script>
-        let intervalID;
-
-        document.addEventListener('DOMContentLoaded', () => {
-
-            const socket = io();
-
-            socket.on('connect', () => {
-                console.log('Connected to server');
-            });
-
-            socket.on('message', (msg) => {
-                console.log('Received message:', msg);
-            });
-
-            // Listen for the 'update' event from the server
-            socket.on('update', (data) => {
-                console.log('Received update:', data);
-            });
-
-            function moveForward() {
-                intervalId = setInterval(() => {
-                    console.log('Forward button is pressed');
-                    sendMessage('forward'); // Call sendMessage or any other function you want to perform repeatedly
-                }, 100); // Perform the action every 1 second (1000 ms)
-            }
-
-            function moveReverse() {
-                intervalId = setInterval(() => {
-                    console.log('Reverse button is pressed');
-                    sendMessage('reverse'); // Call sendMessage or any other function you want to perform repeatedly
-                }, 100); // Perform the action every 1 second (1000 ms)
-            }
-
-            function moveLeft() {
-                intervalId = setInterval(() => {
-                    console.log('Left button is pressed');
-                    sendMessage('left'); // Call sendMessage or any other function you want to perform repeatedly
-                }, 100); // Perform the action every 1 second (1000 ms)
-            }
-
-            function moveRight() {
-                intervalId = setInterval(() => {
-                    console.log('Right button is pressed');
-                    sendMessage('right'); // Call sendMessage or any other function you want to perform repeatedly
-                }, 100); // Perform the action every 1 second (1000 ms)
-            }
-
-            // Function to stop performing the action when the button is released
-            function stopAction() {
-                sendMessage('stop');
-                clearInterval(intervalId);
-            }
-
-            // Set up event listeners for mousedown and mouseup on the button
-            const upbutton = document.getElementById('sendUpButton');
-            if (upbutton) {
-                upbutton.addEventListener('mousedown', moveForward);
-                upbutton.addEventListener('mouseup', stopAction);
-                upbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
-            } else {
-                console.error('Up Button element not found');
-            }
-
-            const downbutton = document.getElementById('sendDownButton');
-            if (downbutton) {
-                downbutton.addEventListener('mousedown', moveReverse);
-                downbutton.addEventListener('mouseup', stopAction);
-                downbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
-            } else {
-                console.error('Down Button element not found');
-            }
-
-            const leftbutton = document.getElementById('sendLeftButton');
-            if (leftbutton) {
-                leftbutton.addEventListener('mousedown', moveLeft);
-                leftbutton.addEventListener('mouseup', stopAction);
-                leftbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
-            } else {
-                console.error('Left Button element not found');
-            }
-
-            const rightbutton = document.getElementById('sendRightButton');
-            if (rightbutton) {
-                rightbutton.addEventListener('mousedown', moveRight);
-                rightbutton.addEventListener('mouseup', stopAction);
-                rightbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
-            } else {
-                console.error('Right Button element not found');
-            }
-
-            const stopbutton = document.getElementById('sendStopButton');
-            if (stopbutton) {
-                stopbutton.addEventListener('mousedown', stopAction);
-                stopbutton.addEventListener('mouseup', stopAction);
-                stopbutton.addEventListener('mouseleave', stopAction); // To handle case when mouse leaves the button area
-            } else {
-                console.error('Stop Button element not found');
-            }
-
-            function sendMessage(direction) {
-                //const message = document.getElementById('messageInput').value;
-                socket.send(direction);
-            }
-
+     <script>
+        document.getElementById('sendUpButton').addEventListener('click', () => {
+            fetch('/move_robot?direction=forward')
+                .catch(error => {
+                    console.error('Error fetching the URL:', error);
+                });
         });
-
-
-
     </script>
 </head>
 <body>
