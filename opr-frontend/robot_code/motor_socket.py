@@ -144,6 +144,10 @@ def main():
     host = 'localhost'
     port = 55001
 
+    # Start new thread for safety light
+    safety_light = threading.Thread(target=safety_light_timeout())
+    safety_light.start()
+
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((host, port))
         server_socket.listen()
