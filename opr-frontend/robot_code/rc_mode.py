@@ -5,9 +5,9 @@ controller = nes.Nes()
 drive = drive_client.SocketClient()
 drive.connect()
 
-try:
-    previous_input = "neutral"
-    while True:
+previous_input = "neutral"
+while True:
+    try:
         button_input = controller.snes_input()
 
         while button_input != previous_input:
@@ -19,14 +19,9 @@ try:
                 drive.send_command("left")
             elif button_input == "right":
                 drive.send_command("right")
+            elif button_input == "neutral":
+                drive.send_command("stop")
 
-            # Check button change
-            button_input = controller.snes_input()
-
-        # Stop motors once if we go to neutral
-        if button_input == "neutral" and previous_input != "neutral":
-            drive.send_command("stop")
-
-        previous_input = button_input
-except:
-    print("something went wrong")
+            previous_input = controller.snes_input()
+    except:
+        print("something went wrong")
