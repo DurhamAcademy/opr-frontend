@@ -298,7 +298,8 @@ def remote_control():
 @login_required
 def move_robot():
     global drive
-    if request.args.get['direction'] == 'forward':
+    direction = request.args.get('direction', default="none")
+    if  direction == 'forward':
         drive.send_command("forward")
     return
 
