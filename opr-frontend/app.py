@@ -43,7 +43,10 @@ SimpleLogin(app)
 
 # Globals
 # Start Robot Code by Default
-robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
+try:
+    robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
+except:
+    robot_code_process = None
 
 drive = None
 # Connect to drive controller
@@ -299,9 +302,17 @@ def remote_control():
 def move_robot():
     global drive
     direction = request.args.get('direction', default="none")
-    if  direction == 'forward':
+    if direction == 'forward':
         drive.send_command("forward")
-    return
+    if direction == 'reverse':
+        drive.send_command("reverse")
+    if direction == 'left':
+        drive.send_command("left")
+    if direction == 'right':
+        drive.send_command("right")
+    if direction == 'stop':
+        drive.send_command("stop")
+    return "Done"
 
 
 if __name__ == '__main__':

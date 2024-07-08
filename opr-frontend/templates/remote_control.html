@@ -51,36 +51,167 @@
 
     <!-- D-Pad -->
     <div class="wrapper">
-      <div class="center "onmousedown="moveStop()" id="sendStopButton">
+      <div class="center" id="sendStopButton">
           <div class="center-circle"></div>
       </div>
 
-      <div class="up direction" onmousedown="moveForward()" id="sendUpButton">
+      <div class="up direction" id="sendUpButton">
         <div class="up-triangle"></div>
       </div>
 
-      <div class="right direction" onmousedown="moveRight()" id="sendRightButton">
+      <div class="right direction" id="sendRightButton">
         <div class="right-triangle"></div>
       </div>
-      <div class="down direction" onmousedown="moveReverse()" id="sendDownButton">
+      <div class="down direction" id="sendDownButton">
         <div class="down-triangle"></div>
       </div>
 
-      <div class="left direction" onmousedown="moveLeft()" id="sendLeftButton">
+      <div class="left direction" id="sendLeftButton">
         <div class="left-triangle"></div>
       </div>
 
     </div>
 
     <script>
-        document.getElementById('sendUpButton').addEventListener('click', () => {
-            fetch('/move_robot?direction=forward')
-                .catch(error => {
-                    console.error('Error fetching the URL:', error);
-                });
-        });
-    </script>
+        let intervalId;
 
+        // Forward
+        document.getElementById('sendUpButton').addEventListener('mousedown', () => {
+            intervalId = setInterval(() => {
+                fetch('/move_robot?direction=forward')
+                    .catch(error => {
+                        console.error('Error fetching the forward URL:', error);
+                    });
+            }, 100); // Adjust the interval as needed (1000 ms = 1 second)
+        });
+
+        document.getElementById('sendUpButton').addEventListener('mouseup', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // For good measure, also stop the interval if the user moves the mouse away while pressing the button
+        document.getElementById('sendUpButton').addEventListener('mouseleave', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // reverse
+        document.getElementById('sendDownButton').addEventListener('mousedown', () => {
+            intervalId = setInterval(() => {
+                fetch('/move_robot?direction=reverse')
+                    .catch(error => {
+                        console.error('Error fetching the reverse URL:', error);
+                    });
+            }, 100); // Adjust the interval as needed (1000 ms = 1 second)
+        });
+
+        document.getElementById('sendDownButton').addEventListener('mouseup', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // For good measure, also stop the interval if the user moves the mouse away while pressing the button
+        document.getElementById('sendDownButton').addEventListener('mouseleave', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // left
+        document.getElementById('sendLeftButton').addEventListener('mousedown', () => {
+            intervalId = setInterval(() => {
+                fetch('/move_robot?direction=left')
+                    .catch(error => {
+                        console.error('Error fetching the left URL:', error);
+                    });
+            }, 100); // Adjust the interval as needed (1000 ms = 1 second)
+        });
+
+        document.getElementById('sendLeftButton').addEventListener('mouseup', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // For good measure, also stop the interval if the user moves the mouse away while pressing the button
+        document.getElementById('sendLeftButton').addEventListener('mouseleave', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+
+        // right
+        document.getElementById('sendRightButton').addEventListener('mousedown', () => {
+            intervalId = setInterval(() => {
+                fetch('/move_robot?direction=right')
+                    .catch(error => {
+                        console.error('Error fetching the right URL:', error);
+                    });
+            }, 100); // Adjust the interval as needed (1000 ms = 1 second)
+        });
+
+        document.getElementById('sendRightButton').addEventListener('mouseup', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // For good measure, also stop the interval if the user moves the mouse away while pressing the button
+        document.getElementById('sendRightButton').addEventListener('mouseleave', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // stop
+        document.getElementById('sendStopButton').addEventListener('mousedown', () => {
+            intervalId = setInterval(() => {
+                fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the forward URL:', error);
+                    });
+            }, 100); // Adjust the interval as needed (1000 ms = 1 second)
+        });
+
+        document.getElementById('sendStopButton').addEventListener('mouseup', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+        // For good measure, also stop the interval if the user moves the mouse away while pressing the button
+        document.getElementById('sendStopButton').addEventListener('mouseleave', () => {
+            clearInterval(intervalId);
+            fetch('/move_robot?direction=stop')
+                    .catch(error => {
+                        console.error('Error fetching the stop URL:', error);
+                    });
+        });
+
+    </script>
 
 </body>
 </html>
