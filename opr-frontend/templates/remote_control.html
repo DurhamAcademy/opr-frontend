@@ -18,11 +18,10 @@
           width: 100%;
           max-width: 100%;
         }
-        .video-js {
+        video {
           width: 100%;
           height: auto;
         }
-
         #homeicon {
             width: 50px;
             position: absolute;
@@ -35,19 +34,15 @@
 
     <link rel="stylesheet" href="/static/css/dpad.css">
 
-
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
 
 </head>
 <body>
 
     <div id="video-container">
-        <video-js id="my-video" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
-          <source src="/static/hls_stream/camera_output.m3u8">
-        </video-js>
-      </div>
+      <video id="video" width="1920" height="536" controls></video>
+    </div>
 
     <!-- Home -->
     <a href="/view_markers"><img src="/static/images/house.png" id="homeicon"></a>
@@ -236,8 +231,6 @@
         }
       });
     </script>
-
-    <script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
 
 </body>
 </html>
