@@ -46,6 +46,7 @@ class RPLidarProcess:
     def get_angles(self):
         latest_output = self.get_latest_output()
         scan_data = [0] * 360
+        print(latest_output)
         for i in latest_output:
             x = i.split(',')
             scan_data[int(float(x[0]))] = float(x[1])
