@@ -51,19 +51,3 @@ class RPLidarProcess:
             scan_data[int(float(x[0]))] = float(x[1])
             return scan_data
 
-
-if __name__ == "__main__":
-
-    bg_process = RPLidarProcess()
-
-    try:
-        while True:
-            time.sleep(10)  # Adjust the sleep time as needed
-            latest_output = bg_process.get_latest_output()
-
-
-
-    except KeyboardInterrupt:
-        bg_process.stop_process()
-        print("Process terminated.")
-
