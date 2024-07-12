@@ -57,7 +57,6 @@ if __name__ == "__main__":
                 for (angle, distance) in scan:
                     scan_data[min([359, floor(angle)])] = distance
 
-            print("\n".join(latest_output))
     except KeyboardInterrupt:
         bg_process.stop_process()
         print("Process terminated.")
