@@ -44,20 +44,5 @@ class RPLidarProcess:
             self.process.wait()
 
 
-if __name__ == "__main__":
 
-    bg_process = RPLidarProcess()
-
-    try:
-        while True:
-            time.sleep(10)  # Adjust the sleep time as needed
-            latest_output = bg_process.get_latest_output()
-            scan_data = [0] * 360
-            for scan in latest_output:
-                for (angle, distance) in scan:
-                    scan_data[min([359, floor(angle)])] = distance
-
-    except KeyboardInterrupt:
-        bg_process.stop_process()
-        print("Process terminated.")
 
