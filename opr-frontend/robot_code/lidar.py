@@ -43,6 +43,27 @@ class RPLidarProcess:
             self.process.terminate()
             self.process.wait()
 
+    def get_angles(self):
+        latest_output = self.get_latest_output()
+        scan_data = [0] * 360
+        for i in latest_output:
+            x = i.split(',')
+            scan_data[int(float(x[0]))] = x[1]
+            return scan_data
 
 
+if __name__ == "__main__":
+
+    bg_process = RPLidarProcess()
+
+    try:
+        while True:
+            time.sleep(10)  # Adjust the sleep time as needed
+            latest_output = bg_process.get_latest_output()
+
+
+
+    except KeyboardInterrupt:
+        bg_process.stop_process()
+        print("Process terminated.")
 
