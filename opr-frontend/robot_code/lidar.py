@@ -8,7 +8,7 @@ from math import floor
 class RPLidarProcess:
     def __init__(self):
         self.process = None
-        self.output_queue = deque(maxlen=1000)
+        self.output_queue = deque(maxlen=8000)
         self.lock = threading.Lock()
         self.stop_event = threading.Event()
         self.executable = "/home/pi/opr-frontend/opr-frontend/robot_code/rplidar.sh"
@@ -33,7 +33,7 @@ class RPLidarProcess:
                 self.output_queue.append(line.strip())
         self.process.stdout.close()
 
-    def get_latest_output(self, num_lines=1000):
+    def get_latest_output(self, num_lines=8000):
         with self.lock:
             return list(self.output_queue)[-num_lines:]
 
