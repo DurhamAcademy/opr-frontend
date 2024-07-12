@@ -11,16 +11,21 @@ import threading
 import camera
 import charge_port
 import drive_client
+import lidar
 
 # Import env file
 load_dotenv()
 load_dotenv(dotenv_path='../.env')
 base_dir = os.getenv('OPR_BASE_DIR')
 
-# drive = motor_driver.Motor()
 ar = arduino.Arduino()
+
+l = lidar.RPLidarProcess()
+l.get_angles()
+
 drive_controller = drive_client.SocketClient()
 drive_controller.connect()
+
 
 """
 Logging
@@ -81,6 +86,66 @@ def get_routes():
     with open(base_dir + 'opr-frontend/robot_code/route.json') as route_file:
         route = json.load(route_file)
     return route
+
+
+def angle_check():
+    """
+    Check if something is in the way.
+    Sections Left to Right.
+    0: 270-315
+    1: 316-359
+    2: 0-45
+    3: 46-90
+
+    :return: number of the section affected.
+    """
+    ranges = [(270, 315), (316, 359), (0, 45), (46, 90)]
+    angles = l.get_angles()
+
+    largest_reading = [0, 0, 0, 0]
+
+    for section in ranges:
+        for angle in range(section[0], section[1] + 1):
+            if 100 < angles[angle] < config.min_distance:
+                if largest_reading[ranges.index(section)] < angles[angle]:
+                    largest_reading[ranges.index(section)] = angles[angle]
+    return largest_reading
+
+
+def check_perimeter():
+    """
+    Adjust direction based on perimeter
+    :return:
+    """
+    largest_reading = angle_check()
+
+    if largest_reading[1] == 0 and largest_reading[2] == 0:
+        # nothing in front, no course correction
+        return
+    elif (largest_reading[0] + largest_reading[1]) > (largest_reading[2] + largest_reading[3]):
+        drive_controller.send_command("stop")
+        log("course correction to left", logonly=True)
+        time.sleep(1)
+        # most room to move seems to be on left
+        # move left
+        # turn until there is no obstruction in front of section 2 which is slightly right of front.
+        obstruction = angle_check()[2]
+        while obstruction < config.min_distance:
+            drive_controller.send_command("left")
+            obstruction = angle_check()[2]
+        return
+    elif (largest_reading[0] + largest_reading[1]) < (largest_reading[2] + largest_reading[3]):
+        drive_controller.send_command("stop")
+        log("course correction to right", logonly=True)
+        time.sleep(1)
+        # most room seems to be on right
+        # move right
+        # turn until there is no obstruction in front of section 1 which is slightly left of front.
+        obstruction = angle_check()[2]
+        while obstruction < config.min_distance:
+            drive_controller.send_command("right")
+            obstruction = angle_check()[1]
+        return
 
 
 def fastest_direction(start_degree, end_degree):
@@ -150,36 +215,6 @@ def rotate_to_heading(current_heading, target_heading):
     else:
         print("rotation not needed.")
 
-#
-# def simple_check(ultra):
-#     print(ultra)
-#     directions = [1, -1]  # 1 is right, -1 is left
-#     turn_dir = directions[ultra.index(max(ultra[:2]))]  # pick left direction if left ultra is greater, vice versa
-#     forward_time = 2
-#     orig_angle = gps.get_heading()
-#     for i in range(2):
-#         for j in range(2):
-#             # check two times if you can get around obstacle
-#             if turn_dir == 1:
-#                 rotate_to_heading(orig_angle, orig_angle + 70)  # turn in chosen direction
-#             else:
-#                 rotate_to_heading(orig_angle, orig_angle - 70)  # turn in chosen direction
-#             drive("forward")
-#             time.sleep(forward_time)
-#             angle = gps.get_heading()
-#             print("back", orig_angle)
-#             rotate_to_heading(angle, orig_angle)  # turn back to check ultras
-#             check = ar.get_ultrasonic()
-#             print(check[:2])
-#             if min(check[:2]) > config.ultra_alert_distance or min(check[:2]) == 0:
-#                 return True  # check ultrasonics, return true if they are clear
-#         turn_dir *= -1  # try the other direction, currently are facing towards obstacle
-#         angle = gps.get_heading()
-#         rotate_to_heading(angle, orig_angle + (90 * turn_dir))  # turn in new chosen direction in order to move back
-#         drive("forward")
-#         time.sleep(forward_time * 2)  # drive back to where you started and repeat loop
-#     return False  # return false if you can't get unstuck, give up
-
 
 def go_to_position(target_pos: tuple):
     current_pos = gps.get_gps_coords()
@@ -191,15 +226,12 @@ def go_to_position(target_pos: tuple):
         # print("targetheading: " + str(target_heading))
         rotate_to_heading(current_heading, target_heading)
 
-        # Drive forward config.gps_heading_check_interval seconds. check obstacle every
+        # Drive forward config.gps_heading_check_interval seconds. check perimeter every
         # .5 seconds.
         time_count = 0
         while time_count <= config.gps_heading_check_interval:
-            if not check_obstacle():
-                drive_controller.send_command("forward")
-            else:
-                log("Obstacle detected.")
-                drive_controller.send_command("stop")
+            check_perimeter()
+            drive_controller.send_command("forward")
 
             time.sleep(.5)
             time_count += .5
@@ -232,29 +264,6 @@ def check_stuck():
     :return: Bool
     """
     return False
-
-
-# def reroute(trigger, distance):
-#     """
-#     Complex ultrasonic reroutes, unfinished
-#     """
-#     closer = "right"  # pos will make it turn right, neg will make it turn left
-#     if trigger[0] < trigger[1]:
-#         closer = "left"
-#     # reverse for distance
-#     if closer == "left":
-#         drive.set_left_speed(-30)
-#         drive.set_right_speed(-40)
-#     else:
-#         drive.set_left_speed(-40)
-#         drive.set_right_speed(-30)
-#     checkUltra = ar.get_ultrasonic()
-#     if checkUltra[:2] == 0:
-#         drive.drive_forward()
-#     elif checkUltra[1:] == 0:
-#         drive.drive_reverse()
-#     else:
-#         print("is there an else here")
 
 
 def check_perimeter():
