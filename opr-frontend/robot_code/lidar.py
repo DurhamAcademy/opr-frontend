@@ -49,6 +49,8 @@ class RPLidarProcess:
         print(latest_output)
         for i in latest_output:
             x = i.split(',')
+            print(x[0])
+            print(x[1])
             scan_data[int(float(x[0]))] = float(x[1])
             return scan_data
 
