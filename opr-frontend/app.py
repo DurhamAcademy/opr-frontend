@@ -44,7 +44,8 @@ SimpleLogin(app)
 # Globals
 # Start Robot Code by Default
 try:
-    robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
+    #robot_code_process = subprocess.Popen(["python", "robot_code/main.py"])
+    robot_code_process = None
 except:
     robot_code_process = None
 

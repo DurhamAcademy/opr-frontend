@@ -33,7 +33,7 @@ class RPLidarProcess:
                 self.output_queue.append(line.strip())
         self.process.stdout.close()
 
-    def get_latest_output(self, num_lines=8300):
+    def get_latest_output(self, num_lines=3600):
         with self.lock:
             return list(self.output_queue)[-num_lines:]
 
